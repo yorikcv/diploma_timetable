@@ -7,18 +7,11 @@ module.exports = function(app) {
 
         Teacher.find(function(err, teachers) {
             if (err) {
-                res.json(500, err);
+                next(err);
             } else {
-                console.log(teachers);
-                res.render('index', {
-                    locals: {
-                        teachers: teachers
-                    }
-                });
+                res.render('index', {teachers: teachers});
             }
         });
-
-
     };
 
     app.get('/', route.index);

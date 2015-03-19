@@ -14,7 +14,7 @@
     </div>
     <div class="container">
         <h1>Teachers</h1>
-        <%if (typeof locals.teachers != 'undefined') { %>
+        <%if (typeof teachers != 'undefined') { %>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -26,7 +26,7 @@
                 </thead>
                 <tbody>
                 <% i = 1%>
-                <% (locals.teachers).forEach(function(teacher){ %>
+                <% (teachers).forEach(function(teacher){ %>
                     <%if (typeof teacher != 'undefined') { %>
                         <tr>
                             <td><%= i++ %></td>

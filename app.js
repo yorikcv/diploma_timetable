@@ -7,7 +7,8 @@ var express = require('express'),
     methodOverride = require('method-override'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
-    errorhandler = require('errorhandler');
+    errorhandler = require('errorhandler'),
+    HttpError = require('./errors').HttpError;
 
 var app = module.exports = exports.app = express();
 
@@ -19,11 +20,9 @@ app.use(express.static(__dirname + '/public'));
 
 // Bootstrap models
 var modelsPath = path.join(__dirname, 'models');
-fs.readdirSync(modelsPath).forEach(function (file) {
-  require(modelsPath + '/' + file);
+fs.readdirSync(modelsPath).forEach(function(file) {
+    require(modelsPath + '/' + file);
 });
-
-
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -51,7 +50,7 @@ if ('test' == env) {
 
 if ('production' == env) {
     app.use(morgan());
-     app.use(errorhandler({
+    app.use(errorhandler({
         dumpExceptions: false,
         showStack: false
     }));
@@ -65,12 +64,30 @@ app.use(bodyParser());
 // Bootstrap routes/api
 var routesPath = path.join(__dirname, 'routes');
 fs.readdirSync(routesPath).forEach(function(file) {
-  require(routesPath + '/' + file)(app);
+    require(routesPath + '/' + file)(app);
+});
+
+// Error catch, next()
+app.use(function(err, req, res, next) {
+    if (typeof err == 'number') {
+        err = new HttpError(err);
+    }
+
+    if (err instanceof HttpError) {
+        res.sendHttpError(err);
+    } else {
+        if (app.get('env') == 'development') {
+            express.errorHandler()(err, req, res, next);
+        } else {
+            log.error(err);
+            err = new HttpError(500);
+            res.sendHttpError(err);
+        }
+    }
 });
 
 // Start server
 var port = process.env.PORT || 3000;
-app.listen(port, function () {
-  console.log('Express server listening on port %d in %s mode', port, app.get('env'));
+app.listen(port, function() {
+    console.log('Express server listening on port %d in %s mode', port, app.get('env'));
 });
-

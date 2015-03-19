@@ -1,0 +1,24 @@
+{
+    "port": 3000,
+    "mongoose": {
+        "db": "timetable",
+        "host": "localhost",
+        "user": "",
+        "pw": "",
+        "port": 27017,
+        "options": {
+            "db": {
+                "safe": true
+            }
+        }
+    },
+    "session": {
+        "secret": "KillerIsJim",
+        "key": "sid",
+        "cookie": {
+            "path": "/",
+            "httpOnly": true,
+            "maxAge": null
+        }
+    }
+}
