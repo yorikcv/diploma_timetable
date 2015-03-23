@@ -1,5 +1,5 @@
 module.exports = function(app) {
-  // Module dependencies.
+  // Module dependencies
   var mongoose = require('mongoose'),
       Teacher = mongoose.models.Teacher,
       api = {};
@@ -9,7 +9,7 @@ module.exports = function(app) {
     Teacher.find(function(err, teachers) {
       if (err) {
         res.json(500, err);
-      } else {    
+      } else {
         res.json({teachers: teachers});
       }
     });
@@ -29,9 +29,9 @@ module.exports = function(app) {
 
   // POST
   api.addTeacher = function (req, res) {
-    
+
     var teacher;
-      
+
     if(typeof req.body.teacher == 'undefined'){
       return res.json(500, {message: 'teacher is undefined'});
     }
@@ -55,33 +55,20 @@ module.exports = function(app) {
 
     Teacher.findById(id, function (err, teacher) {
 
-
-    
-      if(typeof req.body.teacher["title"] != 'undefined'){
-        teacher["title"] = req.body.teacher["title"];
-      }  
-    
-      if(typeof req.body.teacher["excerpt"] != 'undefined'){
-        teacher["excerpt"] = req.body.teacher["excerpt"];
-      }  
-    
-      if(typeof req.body.teacher["content"] != 'undefined'){
-        teacher["content"] = req.body.teacher["content"];
-      }  
-    
-      if(typeof req.body.teacher["active"] != 'undefined'){
-        teacher["active"] = req.body.teacher["active"];
-      }  
-    
-      if(typeof req.body.teacher["created"] != 'undefined'){
-        teacher["created"] = req.body.teacher["created"];
-      }  
-    
+      if(typeof req.body.teacher.name.first != 'undefined'){
+        teacher.name.first = req.body.teacher.name.first;
+      }
+      if(typeof req.body.teacher.name.last != 'undefined'){
+        teacher.name.last = req.body.teacher.name.last;
+      }
+      if(typeof req.body.teacher.name.middle != 'undefined'){
+        teacher.name.middle = req.body.teacher.name.middle;
+      }
 
       return teacher.save(function (err) {
         if (!err) {
           console.log("updated teacher");
-          return res.json(200, teacher.toObject());        
+          return res.json(200, teacher.toObject());
         } else {
          return res.json(500, err);
         }
@@ -105,7 +92,6 @@ module.exports = function(app) {
         }
       });
     });
-
   };
 
 

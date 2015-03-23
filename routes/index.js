@@ -5,11 +5,12 @@ module.exports = function(app) {
     // index.html
     route.index = function(req, res) {
 
-        Teacher.find(function(err, teachers) {
+        Teacher.find(function(err, list) {
             if (err) {
                 next(err);
             } else {
-                res.render('index', {teachers: teachers});
+                console.log("teacher: " + list.length);
+                res.render('index', {teachers: list});
             }
         });
     };

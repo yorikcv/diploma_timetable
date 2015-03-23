@@ -6,15 +6,17 @@ var mongoose = require('mongoose'),
 
 var teacherSchema = new Schema({
     name: {
-        type: String,
-        required: true
-    },
-    surname: {
-        type: String,
-        required: true
-    },
-    middleName: {
-        type: String
+        first: {
+            type: String,
+            required: true
+        },
+        last: {
+            type: String,
+            required: true
+        },
+        middle: {
+            type: String
+        }
     },
     active: {
         type: Boolean,

@@ -86,6 +86,32 @@ app.use(function(err, req, res, next) {
     }
 });
 
+var mongoose = require('mongoose'),
+    Subject = mongoose.models.Subject,
+    Teacher = mongoose.models.Teacher;
+
+// var subject = new Subject({name: "Пристрої звязку з обєктом"});
+
+// subject.save(function(err) {
+//     if (!err) {
+//         console.log("created teacher");
+//     } else {
+//        console.log("created dont teacher");
+//     }
+// });
+
+// Subject
+//     .findOne({
+//         _id: "550db072da0cddb8104c9946"
+//     })
+//     .populate('teachers')
+//     .exec(function(err, subject) {
+//         if (err) return handleError(err);
+//         console.log(subject.teachers[0].name.first);
+//     })
+
+
+
 // Start server
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
