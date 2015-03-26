@@ -5,7 +5,7 @@ module.exports = function(app) {
     // index.html
     route.index = function(req, res) {
 
-        Teacher.find(function(err, list) {
+        Teacher.find(function(err, list, next) {
             if (err) {
                 next(err);
             } else {

@@ -4,9 +4,10 @@
 var express = require('express'),
     path = require('path'),
     fs = require('fs'),
-    methodOverride = require('method-override'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
+    favicon = require('serve-favicon'),
+    cookieParser = require('cookie-parser'),
     errorhandler = require('errorhandler'),
     HttpError = require('./errors').HttpError;
 
@@ -56,10 +57,13 @@ if ('production' == env) {
     }));
 }
 
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-app.use(methodOverride());
+//middlaware
+app.use(favicon('public/img/favicon.ico'));
+app.set('view engine', 'ejs');
 app.use(bodyParser());
+app.use(cookieParser());
+app.use(require('./middleware/sendHttpError'));
+
 
 // Bootstrap routes/api
 var routesPath = path.join(__dirname, 'routes');
@@ -77,7 +81,7 @@ app.use(function(err, req, res, next) {
         res.sendHttpError(err);
     } else {
         if (app.get('env') == 'development') {
-            express.errorHandler()(err, req, res, next);
+            errorhandler()(err, req, res, next);
         } else {
             log.error(err);
             err = new HttpError(500);
@@ -86,9 +90,9 @@ app.use(function(err, req, res, next) {
     }
 });
 
-var mongoose = require('mongoose'),
-    Subject = mongoose.models.Subject,
-    Teacher = mongoose.models.Teacher;
+// var mongoose = require('mongoose'),
+//     Subject = mongoose.models.Subject,
+//     Teacher = mongoose.models.Teacher;
 
 // var subject = new Subject({name: "Пристрої звязку з обєктом"});
 

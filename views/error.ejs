@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<%- include( 'layouts/head'); -%>
+
+    <body>
+        <div class="container">
+		<%- include( 'layouts/header'); -%>
+            <div class="alert alert-dismissable alert-danger">
+                <strong>Извините, произошла ошибка.</strong> <p><%=error.message%></p>
+            </div>
+        <%- include( 'layouts/footer'); -%>
+        </div>
+    </body>
+
+</html>

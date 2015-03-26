@@ -5,23 +5,25 @@ module.exports = function(app) {
       api = {};
 
   // ALL
-  api.teachers = function (req, res) {
+  api.teachers = function (req, res, next) {
     Teacher.find(function(err, teachers) {
       if (err) {
         res.json(500, err);
       } else {
+        if (teachers === null) next(404);
         res.json({teachers: teachers});
       }
     });
   };
 
   // GET
-  api.teacher = function (req, res) {
+  api.teacher = function (req, res, next) {
     var id = req.params.id;
     Teacher.findOne({ '_id': id }, function(err, teacher) {
       if (err) {
         res.json(404, err);
       } else {
+        if (teacher === null) return next(404);
         res.json(200, {teacher: teacher});
       }
     });
