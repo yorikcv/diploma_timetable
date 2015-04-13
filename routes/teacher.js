@@ -8,7 +8,7 @@ module.exports = function(app) {
   api.teachers = function (req, res, next) {
     Teacher.find(function(err, teachers) {
       if (err) {
-        res.json(500, err);
+        next(err);
       } else {
         if (teachers === null) next(404);
         res.json({teachers: teachers});
@@ -21,7 +21,7 @@ module.exports = function(app) {
     var id = req.params.id;
     Teacher.findOne({ '_id': id }, function(err, teacher) {
       if (err) {
-        res.json(404, err);
+        next(err);
       } else {
         if (teacher === null) return next(404);
         res.json(200, {teacher: teacher});

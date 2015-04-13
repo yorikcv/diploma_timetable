@@ -1,7 +1,9 @@
 module.exports = function(app) {
+
     var mongoose = require('mongoose'),
         Teacher = mongoose.models.Teacher,
-        route = {};
+        route = {},
+        checkAuth = require('../middleware/checkAuth');
     // index.html
     route.index = function(req, res) {
 
@@ -15,5 +17,5 @@ module.exports = function(app) {
         });
     };
 
-    app.get('/', route.index);
+    app.get('/', checkAuth, route.index);
 };

@@ -2,14 +2,18 @@
 
 // Module dependencies.
 var express = require('express'),
+    mongoose = require('mongoose'),
     path = require('path'),
     fs = require('fs'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
     favicon = require('serve-favicon'),
     cookieParser = require('cookie-parser'),
+    session = require('express-session'),
     errorhandler = require('errorhandler'),
     HttpError = require('./errors').HttpError;
+
+var config = require('./config');
 
 var app = module.exports = exports.app = express();
 
@@ -18,12 +22,6 @@ app.locals.siteName = "Diploma";
 var db = require('./config/db');
 app.use(express.static(__dirname + '/public'));
 
-
-// Bootstrap models
-var modelsPath = path.join(__dirname, 'models');
-fs.readdirSync(modelsPath).forEach(function(file) {
-    require(modelsPath + '/' + file);
-});
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -38,17 +36,6 @@ if ('development' == env) {
     });
 }
 
-if ('test' == env) {
-    app.use(morgan('test'));
-    app.set('view options', {
-        pretty: true
-    });
-    app.use(errorhandler({
-        dumpExceptions: true,
-        showStack: true
-    }));
-}
-
 if ('production' == env) {
     app.use(morgan());
     app.use(errorhandler({
@@ -57,19 +44,41 @@ if ('production' == env) {
     }));
 }
 
+var MongoStore = require('connect-mongo')(session);
+var sessionOptions = config.get('session');
+
 //middlaware
+app.use(bodyParser());
 app.use(favicon('public/img/favicon.ico'));
 app.set('view engine', 'ejs');
-app.use(bodyParser());
 app.use(cookieParser());
-app.use(require('./middleware/sendHttpError'));
+app.use(session({
+    secret: sessionOptions.secret,
+    key: sessionOptions.key,
+    cookie: sessionOptions.cookie,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection
+    })
+}));
 
+
+
+// Bootstrap models
+var modelsPath = path.join(__dirname, 'models');
+fs.readdirSync(modelsPath).forEach(function(file) {
+    require(modelsPath + '/' + file);
+});
+
+app.use(require('./middleware/sendHttpError'));
+app.use(require('./middleware/loadUser'));
 
 // Bootstrap routes/api
 var routesPath = path.join(__dirname, 'routes');
 fs.readdirSync(routesPath).forEach(function(file) {
     require(routesPath + '/' + file)(app);
 });
+
+
 
 // Error catch, next()
 app.use(function(err, req, res, next) {
@@ -89,31 +98,6 @@ app.use(function(err, req, res, next) {
         }
     }
 });
-
-// var mongoose = require('mongoose'),
-//     Subject = mongoose.models.Subject,
-//     Teacher = mongoose.models.Teacher;
-
-// var subject = new Subject({name: "Пристрої звязку з обєктом"});
-
-// subject.save(function(err) {
-//     if (!err) {
-//         console.log("created teacher");
-//     } else {
-//        console.log("created dont teacher");
-//     }
-// });
-
-// Subject
-//     .findOne({
-//         _id: "550db072da0cddb8104c9946"
-//     })
-//     .populate('teachers')
-//     .exec(function(err, subject) {
-//         if (err) return handleError(err);
-//         console.log(subject.teachers[0].name.first);
-//     })
-
 
 
 // Start server

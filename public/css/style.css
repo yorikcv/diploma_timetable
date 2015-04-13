@@ -1,0 +1,12 @@
+.padding-bottom-50px {
+    margin-top: 50px;
+}
+
+.btn-color-050 {
+	background-color: rgb(232,234,246) !important;
+}
+
+.btn-color-600 {
+	background-color: rgb(57,73,171) !important;
+	color: white !important;
+}

@@ -4,11 +4,11 @@
 
     <body>
         <div class="container">
-		<%- include( 'layouts/header'); -%>
-            <div class="alert alert-dismissable alert-danger">
-                <strong>Извините, произошла ошибка.</strong> <p><%=error.message%></p>
-            </div>
-        <%- include( 'layouts/footer'); -%>
+            <%- include( 'layouts/header'); -%>
+                <h1><%= error.message %></h1>
+                <h2><%= error.status %></h2>
+                <pre><%= error.stack %></pre>
+            <%- include( 'layouts/footer'); -%>
         </div>
     </body>
 

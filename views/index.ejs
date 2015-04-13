@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html>
+
+<head>
     <%- include( 'layouts/head'); -%>
+</head>
+
 <body>
     <div class="container">
-        <%- include( 'layouts/header'); -%>
-            <h1>Teachers</h1>
-            <%if (teachers.length> 0) { %>
-                <table class="table table-striped table-hover ">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Surname</th>
-                            <th>Middle Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% i=1 %>
-                            <% (teachers).forEach(function(teacher){ %>
-                                <%if (typeof teacher !='undefined' ) { %>
-                                    <tr>
-                                        <td>
-                                            <%=i ++ %>
-                                        </td>
-                                        <td>
-                                            <%=teacher.name.first %>
-                                        </td>
-                                        <td>
-                                            <%=teacher.name.last %>
-                                        </td>
-                                        <td>
-                                            <%=teacher.name.middle %>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            <% });%>
-                    </tbody>
-                </table>
-            <% } %>
-        <%- include( 'layouts/footer'); -%>
+        <%- include( 'layouts/header', {username: user.login}); -%>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>Teachers</h1>
+                    <%if (teachers.length> 0) { %>
+                        <table class="table table-striped table-hover ">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Middle Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% i=1 %>
+                                    <% (teachers).forEach(function(teacher){ %>
+                                        <%if (typeof teacher !='undefined' ) { %>
+                                            <tr>
+                                                <td>
+                                                    <%=i ++ %>
+                                                </td>
+                                                <td>
+                                                    <%=teacher.name.first %>
+                                                </td>
+                                                <td>
+                                                    <%=teacher.name.last %>
+                                                </td>
+                                                <td>
+                                                    <%=teacher.name.middle %>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                                <% });%>
+                            </tbody>
+                        </table>
+                        <% } %>
+                </div>
+            </div>
+            <%- include( 'layouts/footer'); -%>
     </div>
 </body>
 

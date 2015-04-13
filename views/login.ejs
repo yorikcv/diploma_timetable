@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%- include( 'layouts/head'); -%>
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+        <div class="jumbotron padding-bottom-50px">
+            <form id="loginForm" class="form-horizontal">
+                <fieldset>
+                    <legend>Log In</legend>
+                    <div class="form-group">
+                        <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputLogin" placeholder="Login">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+                        <div class="col-lg-10">
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2 alertError">gfdgdfg</div>
+                        <div class="col-lg-4 col-lg-offset-2">
+                            <button id="loginButton" class="btn btn-color-600 login">Log In</button>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-2">
+                            <button id="singinButton" type="button" class="btn btn-color-050">Sing In</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        </div>
+    </div>
+</body>
+
+</html>
