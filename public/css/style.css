@@ -3,10 +3,32 @@
 }
 
 .btn-color-050 {
-	background-color: rgb(232,234,246) !important;
+    background-color: rgb(232, 234, 246) !important;
 }
 
 .btn-color-600 {
-	background-color: rgb(57,73,171) !important;
-	color: white !important;
+    background-color: rgb(57, 73, 171) !important;
+    color: white !important;
+}
+
+.icon {
+    display: inline-block;
+    padding: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    float: right;
+}
+
+.icon:hover {
+    color: #1a237e;
+}
+
+.icon i {
+    font-size: 26pt;
+}
+
+.closeModal {}
+
+.alertError {
+    color: red;
 }

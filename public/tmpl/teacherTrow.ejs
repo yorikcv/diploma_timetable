@@ -1,0 +1,20 @@
+<% i=1 %>
+    <% (teachers).forEach(function(teacher){ %>
+        <%if (typeof teacher !='undefined' ) { %>
+            <tr>
+                <td>
+                    <%=i ++ %>
+                </td>
+                <td>
+                    <%=teacher.name.first %>
+                </td>
+                <td>
+                    <%=teacher.name.last %>
+                </td>
+                <td>
+                    <%=teacher.name.middle %>
+                    <!-- <i class="mdi-editor-mode-edit la" style="float:right"></i> -->
+                </td>
+            </tr>
+            <% } %>
+                <% });%>

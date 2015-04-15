@@ -78,7 +78,10 @@ fs.readdirSync(routesPath).forEach(function(file) {
     require(routesPath + '/' + file)(app);
 });
 
-
+// 404
+app.get('*', function(req, res, next){
+  next(new HttpError(404));
+});
 
 // Error catch, next()
 app.use(function(err, req, res, next) {
@@ -98,6 +101,8 @@ app.use(function(err, req, res, next) {
         }
     }
 });
+
+
 
 
 // Start server

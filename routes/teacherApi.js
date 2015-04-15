@@ -2,7 +2,8 @@ module.exports = function(app) {
   // Module dependencies
   var mongoose = require('mongoose'),
       Teacher = mongoose.models.Teacher,
-      api = {};
+      api = {},
+      checkAuth = require('../middleware/checkAuth');
 
   // ALL
   api.teachers = function (req, res, next) {
@@ -11,7 +12,7 @@ module.exports = function(app) {
         next(err);
       } else {
         if (teachers === null) next(404);
-        res.json({teachers: teachers});
+        res.json(teachers);
       }
     });
   };
@@ -34,11 +35,15 @@ module.exports = function(app) {
 
     var teacher;
 
-    if(typeof req.body.teacher == 'undefined'){
+    debugger;
+
+    if(typeof req.body.name == 'undefined'){
       return res.json(500, {message: 'teacher is undefined'});
     }
 
-    teacher = new Teacher(req.body.teacher);
+    var teacher = {name: req.body.name}
+
+    teacher = new Teacher(teacher);
 
     teacher.save(function (err) {
       if (!err) {
@@ -97,9 +102,9 @@ module.exports = function(app) {
   };
 
 
-  app.get('/api/teachers', api.teachers);
-  app.get('/api/teacher/:id', api.teacher);
-  app.post('/api/teacher', api.addTeacher);
-  app.put('/api/teacher/:id', api.editTeacher);
-  app.delete('/api/teacher/:id', api.deleteTeacher);
+  app.get('/api/teachers', checkAuth, api.teachers);
+  app.get('/api/teacher/:id', checkAuth, api.teacher);
+  app.post('/api/teacher', checkAuth, api.addTeacher);
+  app.put('/api/teacher/:id', checkAuth, api.editTeacher);
+  app.delete('/api/teacher/:id', checkAuth, api.deleteTeacher);
 };

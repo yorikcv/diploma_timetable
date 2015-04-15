@@ -7,7 +7,8 @@
     "jquery": "latest",
     "backbone": "~1.1.2",
     "bootstrap-material-design": "~0.3.0",
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "ejs": "~1.0.0"
   },
   "ignore": [
     "**/.*",

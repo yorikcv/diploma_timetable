@@ -1,20 +1,12 @@
 module.exports = function(app) {
 
-    var mongoose = require('mongoose'),
-        Teacher = mongoose.models.Teacher,
-        route = {},
+    var route = {},
         checkAuth = require('../middleware/checkAuth');
     // index.html
-    route.index = function(req, res) {
+    route.index = function(req, res, next) {
 
-        Teacher.find(function(err, list, next) {
-            if (err) {
-                next(err);
-            } else {
-                console.log("teacher: " + list.length);
-                res.render('index', {teachers: list});
-            }
-        });
+        res.render('index');
+
     };
 
     app.get('/', checkAuth, route.index);

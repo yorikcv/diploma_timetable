@@ -3,7 +3,8 @@ var mongoose = require('mongoose'),
 
 module.exports = function(req, res, next) {
 
-	console.log(req.session.user);
+	res.locals.user = null;
+
     if (!req.session.user) return next();
 
     User.findById(req.session.user, function(err, user) {

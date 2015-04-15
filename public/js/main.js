@@ -7,9 +7,11 @@ window.API = {
     Routers: {},
     init: function() {
         'use strict';
-        Backbone.history.start();
-        var loginView = new this.Views.LoginView();
-        
+
+        var mainRouter = new this.Routers.MainRouter();
+
+        Backbone.history.start({pushState: true});
+
         $('#logoutButton').click(function() {
             $.ajax({
                 url: '/logout',

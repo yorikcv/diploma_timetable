@@ -7,7 +7,7 @@ module.exports = function(app) {
     var async = require('async');
 
     // ALL
-    api.login = function(req, res, next) {
+    api.loginPage = function(req, res, next) {
         res.render('login');
     };
 
@@ -43,7 +43,7 @@ module.exports = function(app) {
         res.sendStatus(200);
     };
 
-    app.get('/login', api.login);
+    app.get('/login', api.loginPage);
     app.post('/login', api.auth);
     app.post('/logout', api.logout);
 };
