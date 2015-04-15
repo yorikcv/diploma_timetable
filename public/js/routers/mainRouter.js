@@ -14,23 +14,27 @@ API.Routers.MainRouter = Backbone.Router.extend({
     },
 
     teachers: function() {
-        
-        // var teacherModel = new API.Models.TeacherModel({
-        //         name: {
-        //             first: 'Танасюк',
-        //             last: 'Юлія',
-        //             middle: 'Володимирівна'
-        //         }
-        // });
-    window.teachersColection = new API.Collections.TeachersCollection({
-        model: new API.Models.TeacherModel()
-    });
+
+        window.teacherModel = new API.Models.TeacherModel({
+            name: {
+                first: 'Танасюк',
+                last: 'Юлія',
+                middle: 'Володимирівна'
+            },
+            _id: '552e3169591ee0700c6bdda8'
+        });
 
 
-    window.Teacher = new API.Views.TeachersView({
-        collection: teachersColection
-    });
+
+        window.teachersColection = new API.Collections.TeachersCollection({
+            model: new API.Models.TeacherModel()
+        });
 
 
-}
+        window.Teacher = new API.Views.TeachersView({
+            collection: teachersColection
+        });
+
+
+    }
 });

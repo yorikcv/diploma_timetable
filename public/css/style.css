@@ -32,3 +32,6 @@
 .alertError {
     color: red;
 }
+.editTools{
+    float: right;
+}

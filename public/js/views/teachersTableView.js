@@ -6,26 +6,27 @@ API.Views.TeachersView = Backbone.View.extend({
         url: '/tmpl/teacherTrow.ejs'
     }),
 
+    events: {
+        "click .openModalAdd": "clearFields",
+        "click #addTeacher": "addTeacher",
+        "click .editTeacherTable": "editTeacherTable"
+    },
+
     initialize: function() {
         console.log("Initializing Teachers View");
 
         this.collection.fetchCollection();
         this.listenTo(this.collection, 'sync', this.render);
 
-
-        this.$('.openModalAdd').on('click', $.proxy(this.clearFields, this));
-        this.$('#addTeacher').on('click', $.proxy(this.addTeacher, this));
-
     },
 
     render: function() {
+        this.$('tbody').html('');
 
-        console.log(this.collection.models);
-        var listHtml = this.teacherTemplate.render({
-            teachers: this.collection.toJSON()
+        this.collection.each(function(teacherModel, key){
+            teacherModel.set("count", key+1);
+            this.$('tbody').append(new API.Views.TeacherView({model: teacherModel}).render());
         });
-
-        this.$('tbody').html(listHtml);
     },
 
     addTeacher: function(event) {
@@ -52,10 +53,14 @@ API.Views.TeachersView = Backbone.View.extend({
             },
             success: function() {
                 that.collection.add(teacherModel);
-                $('.modal').modal('hide');
+                $('#addTeacherModal').modal('hide');
             },
             wait: true
         });
+    },
+
+    editTeacherTable: function() {
+
     },
 
     showErrorMassege: function(message) {

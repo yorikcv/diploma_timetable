@@ -10,21 +10,20 @@
         <%- include( 'layouts/header'); -%>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <div class="icon" data-toggle="modal" data-target="#complete-dialog"><i class="mdi-social-person-add openModalAdd"></i></div>
-                    <div class="icon"><i class="mdi-editor-mode-edit"></i></div>
+                    <div class="icon" data-toggle="modal" data-target="#addTeacherModal"><i class="mdi-social-person-add openModalAdd"></i></div>
                     <h1>Teachers</h1>
-                    <%if (teachers.length> 0) { %>
-                        <table class="table table-striped table-hover ">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Surname</th>
-                                    <th>Middle Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% i=1 %>
+                    <% i=1 %>
+                        <%if (teachers.length> 0) { %>
+                            <table class="table table-striped table-hover ">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Surname</th>
+                                        <th>Middle Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     <% (teachers).forEach(function(teacher){ %>
                                         <%if (typeof teacher !='undefined' ) { %>
                                             <tr>
@@ -40,56 +39,22 @@
                                                 <td>
                                                     <%=teacher.name.middle %>
                                                 </td>
+                                                <td>
+                                                    <i class="mdi-action-delete deleteTeacher editTools"></i>
+                                                    <i class="mdi-editor-mode-edit editTeacher editTools"></i>
+                                                </td>
                                             </tr>
                                             <% } %>
                                                 <% });%>
-                            </tbody>
-                        </table>
-                        <% } %>
+                                </tbody>
+                            </table>
+                            <% } %>
                 </div>
             </div>
             <%- include( 'layouts/footer'); -%>
-                <div id="complete-dialog" class="modal fade" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close closeModal" data-dismiss="modal" aria-hidden="true">×</button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="loginForm" class="form-horizontal">
-                                    <fieldset>
-                                        <legend>Add Teacher</legend>
-                                        <div class="form-group">
-                                            <label for="inputFirstName" class="col-lg-3 control-label">First Name</label>
-                                            <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="inputFirstName" placeholder="First Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputLastName" class="col-lg-3 control-label">Last Name</label>
-                                            <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="inputLastName" placeholder="Last Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="inputMiddleName" class="col-lg-3 control-label">Middle Name</label>
-                                            <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="inputMiddleName" placeholder="Middle Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-lg-9 col-lg-offset-3 alertError"></div>
-                                            <div class="col-lg-9 col-lg-offset-3">
-                                                <button id="addTeacher" class="btn btn-color-600 login">Add</button>
-                                                <button type="button" class="btn btn-color-050" data-dismiss="modal">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <%- include( 'modals/teachers/addTeacher'); -%>
+            <%- include( 'modals/teachers/deleteTeacher'); -%>
+            <%- include( 'modals/teachers/editTeacher'); -%>
     </div>
 </body>
 

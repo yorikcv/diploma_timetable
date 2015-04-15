@@ -8,6 +8,9 @@ module.exports = function(app) {
 
     // ALL
     api.loginPage = function(req, res, next) {
+        if(req.session.user){
+            return res.redirect('/');
+        }
         res.render('login');
     };
 
