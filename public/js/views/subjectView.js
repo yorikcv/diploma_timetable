@@ -9,47 +9,47 @@ API.Views.SubjectView = Backbone.View.extend({
     },
 
     events: {
-        "click .editSubject": "editSubject",
+        // "click .editSubject": "editSubject",
         "click .deleteSubject": "deleteSubject"
     },
 
-    editSubject: function() {
-        $('.alertError').html('');
-        var subject = this.model.toJSON();
-        $('#editName').val(subject.name);
-        $('#editStudentCount').val(subject.studentCount);
+    // editSubject: function() {
+    //     $('.alertError').html('');
+    //     var subject = this.model.toJSON();
+    //     $('#editName').val(subject.name);
+    //     $('#editStudentCount').val(subject.studentCount);
 
-        $('#editSubjectModal').modal('show');
-        $('#editSubjectModal #editSubject').off().on("click", $.proxy(this.saveEditedSubject, this));
-    },
+    //     $('#editSubjectModal').modal('show');
+    //     $('#editSubjectModal #editSubject').off().on("click", $.proxy(this.saveEditedSubject, this));
+    // },
 
-    saveEditedSubject: function() {
-        event.preventDefault();
-        var subject = {
-            name: $('#editName').val(),
-            studentCount: $('#editStudentCount').val()
-        };
+    // saveEditedSubject: function() {
+    //     event.preventDefault();
+    //     var subject = {
+    //         name: $('#editName').val(),
+    //         studentCount: $('#editStudentCount').val()
+    //     };
 
-        this.model.set(subject, {
-            validate: true
-        });
+    //     this.model.set(subject, {
+    //         validate: true
+    //     });
 
-        if (this.model.validationError) return this.showErrorMassege(this.model.validationError);
+    //     if (this.model.validationError) return this.showErrorMassege(this.model.validationError);
 
-        var that = this;
+    //     var that = this;
 
-        this.model.save(null, {
-            error: function() {
-                that.showErrorMassege("Cant connect to server");
-            },
-            success: function() {
-                $('#editSubjectModal').modal('hide');
-            },
-            wait: true
-        });
+    //     this.model.save(null, {
+    //         error: function() {
+    //             that.showErrorMassege("Cant connect to server");
+    //         },
+    //         success: function() {
+    //             $('#editSubjectModal').modal('hide');
+    //         },
+    //         wait: true
+    //     });
 
 
-    },
+    // },
 
     deleteSubject: function() {
         var subject = this.model.toJSON();

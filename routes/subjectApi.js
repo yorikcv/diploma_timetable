@@ -9,7 +9,7 @@ module.exports = function(app) {
     api.subjects = function(req, res, next) {
         Subject.find(function(err, subjects) {
             if (err) {
-                next(err);
+                return next(err);
             } else {
                 if (subjects === null) next(404);
                 res.json(subjects);
@@ -24,7 +24,7 @@ module.exports = function(app) {
             '_id': id
         }, function(err, subject) {
             if (err) {
-                next(err);
+                return next(err);
             } else {
                 if (subject === null) return next(404);
                 res.json(200, {
@@ -35,9 +35,7 @@ module.exports = function(app) {
     };
 
     // POST
-    api.addSubject = function(req, res) {
-
-        var subject;
+    api.addSubject = function(req, res, next) {
 
         if (typeof req.body.name == 'undefined') {
             return res.status(500).json({
@@ -47,7 +45,7 @@ module.exports = function(app) {
 
         var subject = {
             name: req.body.name,
-            studentCount: req.body.studentCount
+            teachers: req.body.teachers
         }
 
         subject = new Subject(subject);
@@ -64,7 +62,7 @@ module.exports = function(app) {
     };
 
     // PUT
-    api.editSubject = function(req, res) {
+    api.editSubject = function(req, res, next) {
         var id = req.params.id;
 
         Subject.findById(id, function(err, subject) {
@@ -75,31 +73,39 @@ module.exports = function(app) {
             if (typeof req.body.studentCount != 'undefined') {
                 subject.studentCount = req.body.studentCount;
             }
-
-            return subject.save(function(err) {
-                if (!err) {
-                    console.log("updated subject");
-                    return res.status(200).json(subject.toObject());
-                } else {
-                    return res.status(500).json(err);
-                }
-                return res.status(201).json(subject);
-            });
+            if (err) {
+                return next(err);
+            } else {
+                return subject.save(function(err) {
+                    if (!err) {
+                        console.log("updated subject");
+                        return res.status(200).json(subject.toObject());
+                    } else {
+                        return res.status(500).json(err);
+                    }
+                    return res.status(201).json(subject);
+                });
+            }
         });
 
     };
 
     // DELETE
-    api.deleteSubject = function(req, res) {
+    api.deleteSubject = function(req, res, next) {
         var id = req.params.id;
         Subject.findById(id, function(err, subject) {
-            return subject.remove(function(err) {
-                if (!err) {
-                    return res.send(204);
-                } else {
-                    return res.json(500, err);
-                }
-            });
+            if (err) {
+                return next(err);
+            } else {
+                if (subject === null) return next(404);
+                subject.remove(function(err) {
+                    if (!err) {
+                        return res.status(204).json(subject);
+                    } else {
+                        return res.status(500).json(err);
+                    }
+                })
+            }
         });
     };
 

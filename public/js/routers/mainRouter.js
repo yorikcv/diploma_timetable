@@ -17,25 +17,19 @@ API.Routers.MainRouter = Backbone.Router.extend({
 
     teachers: function() {
         Teachers = new API.Views.TeachersView({
-            collection: new API.Collections.TeachersCollection({
-                model: new API.Models.TeacherModel()
-            })
+            collection: new API.Collections.TeachersCollection()
         });
     },
 
     auditoriums: function() {
         Auditoriums = new API.Views.AuditoriumsView({
-            collection: new API.Collections.AuditoriumsCollection({
-                model: new API.Models.AuditoriumModel()
-            })
+            collection: new API.Collections.AuditoriumsCollection()
         });
     },
 
     subjects: function() {
         Subjects = new API.Views.SubjectsView({
-            collection: new API.Collections.SubjectsCollection({
-                model: new API.Models.SubjectModel()
-            })
+            collection: new API.Collections.SubjectsCollection()
         });
     }
 });

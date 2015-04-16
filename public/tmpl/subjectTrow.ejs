@@ -1,6 +1,10 @@
 <div class="list-group-item subjectListItem col-md-6 col-lg-4">
     <div class="row-action-primary">
-        <i class="mdi-image-filter-<%=subject.teachers.length%> countTeachers"></i>
+        <% if(subject.teachers.length> 9) {%>
+            <i class="mdi-image-filter-9-plus countTeachers"></i>
+        <% } else {%>
+            <i class="mdi-image-filter-<%=subject.teachers.length%> countTeachers"></i>
+        <% }%>
         <div>Teachers</div>
     </div>
     <div class="row-content">
