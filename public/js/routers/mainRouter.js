@@ -6,7 +6,8 @@ API.Routers.MainRouter = Backbone.Router.extend({
 
     routes: {
         "login": "login",
-        "teachers": "teachers"
+        "teachers": "teachers",
+        "auditoriums": "auditoriums"
     },
 
     login: function() {
@@ -14,27 +15,18 @@ API.Routers.MainRouter = Backbone.Router.extend({
     },
 
     teachers: function() {
-
-        window.teacherModel = new API.Models.TeacherModel({
-            name: {
-                first: 'Танасюк',
-                last: 'Юлія',
-                middle: 'Володимирівна'
-            },
-            _id: '552e3169591ee0700c6bdda8'
+        Teachers = new API.Views.TeachersView({
+            collection: new API.Collections.TeachersCollection({
+                model: new API.Models.TeacherModel()
+            })
         });
+    },
 
-
-
-        window.teachersColection = new API.Collections.TeachersCollection({
-            model: new API.Models.TeacherModel()
+    auditoriums: function() {
+        Auditoriums = new API.Views.AuditoriumsView({
+            collection: new API.Collections.AuditoriumsCollection({
+                model: new API.Models.AuditoriumModel()
+            })
         });
-
-
-        window.Teacher = new API.Views.TeachersView({
-            collection: teachersColection
-        });
-
-
-    }
+    },
 });

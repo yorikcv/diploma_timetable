@@ -48,13 +48,29 @@
                                                 <% });%>
                                 </tbody>
                             </table>
+                            <span id="listIsClear">List is clear. Please add auditorium.</span>
+                            <% } else { %>
+                                <table class="table table-striped table-hover ">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Surname</th>
+                                            <th>Middle Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                                <span id="listIsClear">List is clear. Please add auditorium.</span>
                             <% } %>
                 </div>
             </div>
             <%- include( 'layouts/footer'); -%>
-            <%- include( 'modals/teachers/addTeacher'); -%>
-            <%- include( 'modals/teachers/deleteTeacher'); -%>
-            <%- include( 'modals/teachers/editTeacher'); -%>
+                <%- include( 'modals/teachers/addTeacher'); -%>
+                    <%- include( 'modals/teachers/deleteTeacher'); -%>
+                        <%- include( 'modals/teachers/editTeacher'); -%>
     </div>
 </body>
 

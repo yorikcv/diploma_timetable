@@ -23,10 +23,19 @@ API.Views.TeachersView = Backbone.View.extend({
     render: function() {
         this.$('tbody').html('');
 
-        this.collection.each(function(teacherModel, key){
-            teacherModel.set("count", key+1);
-            this.$('tbody').append(new API.Views.TeacherView({model: teacherModel}).render());
-        });
+        if (this.collection.toJSON().length) {
+            this.$('#listIsClear').hide();
+
+            this.collection.each(function(teacherModel, key) {
+                teacherModel.set("count", key + 1);
+                this.$('tbody').append(new API.Views.TeacherView({
+                    model: teacherModel
+                }).render());
+            });
+        } else {
+            this.$('#listIsClear').show();
+        }
+
     },
 
     addTeacher: function(event) {

@@ -17,18 +17,4 @@ API.Models.TeacherModel = Backbone.Model.extend({
         }
     }
 
-    // saveModel: function() {
-
-    //     this.save(null, {
-    //         error: function() {
-    //             return 'Cant connect to server';
-    //         },
-    //         success: function() {
-    //             return;
-    //         },
-    //         wait: true
-    //     });
-
-    // }
-
 });

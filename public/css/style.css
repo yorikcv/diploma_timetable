@@ -35,3 +35,7 @@
 .editTools{
     float: right;
 }
+
+#listIsClear {
+    display: none;
+}

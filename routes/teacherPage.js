@@ -4,8 +4,8 @@ module.exports = function(app) {
         Teacher = mongoose.models.Teacher,
         route = {},
         checkAuth = require('../middleware/checkAuth');
-    // index.html
-    route.index = function(req, res) {
+    
+    route.teachers = function(req, res) {
 
         Teacher.find(function(err, list, next) {
             if (err) {
@@ -16,5 +16,5 @@ module.exports = function(app) {
         });
     };
 
-    app.get('/teachers', checkAuth, route.index);
+    app.get('/teachers', checkAuth, route.teachers);
 };
