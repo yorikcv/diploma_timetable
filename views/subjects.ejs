@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%- include( 'layouts/head'); -%>
+</head>
+
+<body>
+    <div class="container" id="subjectPage">
+        <%- include( 'layouts/header'); -%>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="icon" data-toggle="modal" data-target="#addSubjectModal"><i class="mdi-content-add-circle-outline openModalAdd"></i></div>
+                    <h1>Subjects</h1>
+                    <div class="list-group subjectList">
+                        <%if (subjects.length> 0) { %>
+                            <% (subjects).forEach(function(subject){ %>
+                                <%if (typeof subject !='undefined' ) { %>
+                                    <div class="list-group-item subjectListItem col-md-6 col-lg-4">
+                                        <div class="row-action-primary">
+                                            <i class="mdi-image-filter-<%=subject.teachers.length%> countTeachers"></i>
+                                            <div>Teachers</div>
+                                        </div>
+                                        <div class="row-content">
+                                            <div class="action-secondary">
+                                                <i class="mdi-action-delete deleteSubject editTools"></i>
+                                                <i class="mdi-editor-mode-edit editSubject editTools"></i>
+                                            </div>
+                                            <h4 class="list-group-item-heading"><%=subject.name%></h4>
+                                        </div>
+                                    </div>
+                                    <span id="listIsClear">List is clear. Please add auditorium.</span>
+                                <% } %>
+                            <% });%>
+                        <% } else { %>
+                            <span id="listIsClear">List is clear. Please add auditorium.</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <%- include( 'layouts/footer'); -%>
+            <%- include( 'modals/subjects/addSubject'); -%> 
+            <%- include( 'modals/subjects/deleteSubject'); -%>
+            <%- include( 'modals/subjects/editSubject'); -%>
+    </div>
+</body>
+
+</html>

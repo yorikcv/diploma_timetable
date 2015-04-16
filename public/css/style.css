@@ -32,10 +32,21 @@
 .alertError {
     color: red;
 }
-.editTools{
+
+.editTools {
     float: right;
 }
 
 #listIsClear {
     display: none;
+}
+
+.subjectListItem {
+    padding: 16px 16px 16px 25px !important;
+}
+
+.countTeachers {
+    font-size: 38px !important;
+    color: #3d5afe !important;
+    background: #e8eaf6 !important;
 }
