@@ -1,0 +1,43 @@
+<div id="addGroupModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close closeModal" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <legend>Add Group</legend>
+                        <div class="form-group">
+                            <label for="inputGroupTitle" class="col-lg-3 control-label">Title</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="inputGroupTitle" placeholder="Title">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputStudentCount" class="col-lg-3 control-label">Count of Students</label>
+                            <div class="col-lg-9">
+                                <input type="number" class="form-control " id="inputStudentCount" placeholder="Count of Students">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputYearEntered" class="col-lg-3 control-label">Time of Studing</label>
+                            <div class="col-lg-9 input-daterange input-group datepickerInput" id="datepicker">
+                                <input type="text" class="input-md form-control" id="inputYearEntered" name="start" />
+                                <span class="input-group-addon">to</span>
+                                <input type="text" class="input-md form-control" id="inputYearEnded" name="end" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3 alertError"></div>
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <button id="addGroup" class="btn btn-color-600">Add</button>
+                                <button type="button" class="btn btn-color-050" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

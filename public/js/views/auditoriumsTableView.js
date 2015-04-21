@@ -54,7 +54,7 @@ API.Views.AuditoriumsView = Backbone.View.extend({
         var that = this;
 
         auditoriumModel.save(null, {
-            error: function() {
+            error: function(model, err) {
                 that.showErrorMassege("Cant connect to server");
             },
             success: function() {

@@ -4,6 +4,9 @@ API.Views.TeacherView = Backbone.View.extend({
     teacherTemplate: new EJS({
         url: '/tmpl/teacherTrow.ejs'
     }),
+    erorrTeacherTemplate: new EJS({
+        url: '/tmpl/errorDeleteTeacher.ejs'
+    }),
 
     initialize: function() {
         this.listenTo(this.model, 'destroy', this.remove);
@@ -67,9 +70,22 @@ API.Views.TeacherView = Backbone.View.extend({
     },
 
     destroyTeacher: function() {
+        var that = this;
+
         this.model.destroy({
-            success: function(model, response) {
+            success: function(model, res) {
                 $('#deleteTeacherModal').modal('hide');
+            },
+            error: function(model, res) {
+                if(res.status === 403) {
+                    $('.errorField').html(that.erorrTeacherTemplate.render({message: 'Cant delete! You must delete subject and try again.'}));
+                    $('.alert-danger').fadeIn('400');
+                    $('#deleteTeacherModal').modal('hide');
+                } else {
+                    $('.errorField').html(that.erorrTeacherTemplate.render({message: 'Cant delete. Error on the server.'}));
+                    $('.alert-danger').fadeIn('400');
+                    $('#deleteTeacherModal').modal('hide');
+                }
             },
             wait: true
         });

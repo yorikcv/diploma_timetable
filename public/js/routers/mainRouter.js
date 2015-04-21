@@ -8,7 +8,8 @@ API.Routers.MainRouter = Backbone.Router.extend({
         "login": "login",
         "teachers": "teachers",
         "auditoriums": "auditoriums",
-        "subjects": "subjects"
+        "subjects": "subjects",
+        "groups": "groups"
     },
 
     login: function() {
@@ -30,6 +31,11 @@ API.Routers.MainRouter = Backbone.Router.extend({
     subjects: function() {
         Subjects = new API.Views.SubjectsView({
             collection: new API.Collections.SubjectsCollection()
+        });
+    },
+    groups: function() {
+        Groups = new API.Views.GroupsView({
+            collection: new API.Collections.GroupsCollection()
         });
     }
 });

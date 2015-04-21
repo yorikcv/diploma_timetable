@@ -11,7 +11,9 @@ var auditoriumSchema = new Schema({
     },
     studentCount: {
         type: Number,
-        required: true
+        required: true,
+        min: 1,
+        max: 100
     },
     active: {
         type: Boolean,

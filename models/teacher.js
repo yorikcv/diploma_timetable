@@ -8,14 +8,18 @@ var teacherSchema = new Schema({
     name: {
         first: {
             type: String,
-            required: true
+            required: true,
+            set: capitalize
         },
         last: {
             type: String,
-            required: true
+            required: true,
+            set: capitalize
         },
         middle: {
-            type: String
+            type: String,
+            required: true,
+            set: capitalize
         }
     },
     active: {
@@ -27,5 +31,10 @@ var teacherSchema = new Schema({
         default: Date.now
     }
 });
+
+function capitalize(val) {
+    if ('string' != typeof val) val = '';
+    return val.charAt(0).toUpperCase() + val.substring(1);
+}
 
 module.exports = mongoose.model('Teacher', teacherSchema);

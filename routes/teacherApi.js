@@ -2,9 +2,14 @@ module.exports = function(app) {
     // Module dependencies
     var mongoose = require('mongoose'),
         Teacher = mongoose.models.Teacher,
+        Subject = mongoose.models.Subject,
         api = {},
-        checkAuth = require('../middleware/checkAuth');
+        checkAuth = require('../middleware/checkAuth'),
+        async = require('async');
 
+    api.teachersPage = function(req, res) {
+        res.render('teachers');
+    };
     // ALL
     api.teachers = function(req, res, next) {
         Teacher.find(function(err, teachers) {
@@ -94,18 +99,45 @@ module.exports = function(app) {
     // DELETE
     api.deleteTeacher = function(req, res) {
         var id = req.params.id;
-        Teacher.findById(id, function(err, teacher) {
-            return teacher.remove(function(err) {
-                if (!err) {
-                    return res.send(204);
+
+        async.waterfall([
+            function(callback) {
+                Teacher.findById(id, callback);
+                // callback(null, 'one', 'two');
+            },
+            function(teacher, callback) {
+                Subject.find({
+                    teachers: {
+                        _id: teacher._id
+                    }
+                }, callback);
+            },
+            function(subject, callback) {
+                if (subject.length) {
+                    callback('This Teacher have ref to subject');
                 } else {
-                    return res.json(500, err);
+                    callback(null);
                 }
-            });
+            }
+        ], function(err) {
+            if (err) {
+                return res.status(403).json(err);
+            } else {
+                Teacher.findById(id, function(err, teacher) {
+                    return teacher.remove(function(err) {
+                        if (!err) {
+                            return res.sendStatus(204);
+                        } else {
+                            return res.json(500, err);
+                        }
+                    });
+                });
+            }
+
         });
     };
 
-
+    app.get('/teachers', checkAuth, api.teachersPage);
     app.get('/api/teachers', checkAuth, api.teachers);
     app.get('/api/teacher/:id', checkAuth, api.teacher);
     app.post('/api/teacher', checkAuth, api.addTeacher);

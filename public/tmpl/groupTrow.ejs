@@ -1,0 +1,22 @@
+<td>
+    <%=group.count%>
+</td>
+<td>
+    <%=group.title%>
+</td>
+<td>
+    <%= moment(group.yearEntered).format('MMMM Do YYYY')%>
+</td>
+<td>
+    <%= moment(group.yearEnded).format('MMMM Do YYYY')%>
+</td>
+<td>
+    <%=group.semester %>
+</td>
+<td>
+    <%=group.memberStudent %>
+</td>
+<td>
+    <i class="mdi-action-delete deleteGroup editTools"></i>
+    <i class="mdi-editor-mode-edit editGroup editTools"></i>
+</td>

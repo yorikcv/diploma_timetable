@@ -5,6 +5,10 @@ module.exports = function(app) {
         api = {},
         checkAuth = require('../middleware/checkAuth');
 
+    api.auditoriumsPage = function(req, res) {
+        res.render('auditoriums');
+    };
+
     // ALL
     api.auditoriums = function(req, res, next) {
         Auditorium.find(function(err, auditoriums) {
@@ -103,7 +107,7 @@ module.exports = function(app) {
         });
     };
 
-
+    app.get('/auditoriums', checkAuth, api.auditoriumsPage);
     app.get('/api/auditoriums', checkAuth, api.auditoriums);
     app.get('/api/auditorium/:id', checkAuth, api.auditorium);
     app.post('/api/auditorium', checkAuth, api.addAuditorium);

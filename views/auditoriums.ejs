@@ -12,61 +12,24 @@
                 <div class="panel-body">
                     <div class="icon" data-toggle="modal" data-target="#addAuditoriumModal"><i class="mdi-content-add-circle-outline openModalAdd"></i></div>
                     <h1>Auditoriums</h1>
-                    <% i=1 %>
-                        <%if (auditoriums.length > 0) { %>
-                            <table class="table table-striped table-hover ">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Count of Students</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% (auditoriums).forEach(function(auditorium){ %>
-                                        <%if (typeof auditorium !='undefined' ) { %>
-                                            <tr>
-                                                <td>
-                                                    <%=i ++ %>
-                                                </td>
-                                                <td>
-                                                    <%=auditorium.name %>
-                                                </td>
-                                                <td>
-                                                    <%=auditorium.studentCount %>
-                                                </td>
-                                                <td>
-                                                    <i class="mdi-action-delete deleteAuditorium editTools"></i>
-                                                    <i class="mdi-editor-mode-edit editAuditorium editTools"></i>
-                                                </td>
-                                            </tr>
-                                            <% } %>
-                                                <% });%>
-                                </tbody>
-                            </table>
-                            <span id="listIsClear">List is clear. Please add auditorium.</span>
-                            <% } else { %>
-                            <table class="table table-striped table-hover ">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Count of Students</th>
-                                    </tr>
-                                </thead>
-                            <tbody>
-                                <tr></tr>
-                            </tbody>
-
-                            </table>
-                            <span id="listIsClear">List is clear. Please add auditorium.</span>
-                            <%  } %>
+                    <table class="table table-striped table-hover ">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Count of Students</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <span id="listIsClear">List is clear. Please add auditorium.</span>
                 </div>
             </div>
             <%- include( 'layouts/footer'); -%>
-            <%- include( 'modals/auditoriums/addAuditorium'); -%>
-            <%- include( 'modals/auditoriums/editAuditorium'); -%>
-            <%- include( 'modals/auditoriums/deleteAuditorium'); -%>
+                <%- include( 'modals/auditoriums/addAuditorium'); -%>
+                    <%- include( 'modals/auditoriums/editAuditorium'); -%>
+                        <%- include( 'modals/auditoriums/deleteAuditorium'); -%>
     </div>
 </body>
 

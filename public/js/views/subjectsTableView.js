@@ -68,6 +68,7 @@ API.Views.SubjectsView = Backbone.View.extend({
 
         subjectModel.save(null, {
             error: function() {
+                
                 that.showErrorMassege("Cant connect to server");
             },
             success: function() {

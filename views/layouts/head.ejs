@@ -3,6 +3,7 @@
 </title>
 
 <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="/libs/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet">
 <link href="/bower_components/bootstrap-material-design/dist/css/roboto.min.css" rel="stylesheet">
 <link href="/bower_components/bootstrap-material-design/dist/css/material.min.css" rel="stylesheet">
 <link href="/bower_components/bootstrap-material-design/dist/css/ripples.min.css" rel="stylesheet">
@@ -12,10 +13,13 @@
 
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/libs/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 <script src="/bower_components/bootstrap-material-design/dist/js/ripples.min.js"></script>
 <script src="/bower_components/bootstrap-material-design/dist/js/material.min.js"></script>
 
-<script src="/bower_components/ejs/ejs.js"></script>
+<script src="/bower_components/moment/moment.js"></script>
+<script src="/libs/moment-fquarter.js"></script>
+<script src="/libs/ejs.js"></script>
 <script src="/bower_components/underscore/underscore.js"></script>
 <script src="/bower_components/backbone/backbone.js"></script>
 <!-- <script src="../../public/"></script> -->
@@ -27,11 +31,13 @@
 <script src="/js/models/teacherModel.js"></script>
 <script src="/js/models/auditoriumModel.js"></script>
 <script src="/js/models/subjectModel.js"></script>
+<script src="/js/models/groupModel.js"></script>
 
 <!-- collections -->
 <script src="/js/collections/teachersCollection.js"></script>
 <script src="/js/collections/auditoriumsCollection.js"></script>
 <script src="/js/collections/subjectsCollection.js"></script>
+<script src="/js/collections/groupsCollection.js"></script>
 
 <!-- views -->
 <script src="/js/views/loginView.js"></script>
@@ -41,6 +47,8 @@
 <script src="/js/views/auditoriumsTableView.js"></script>
 <script src="/js/views/subjectView.js"></script>
 <script src="/js/views/subjectsTableView.js"></script>
+<script src="/js/views/groupView.js"></script>
+<script src="/js/views/groupsTableView.js"></script>
 
 <!-- routers -->
 <script src="/js/routers/mainRouter.js"></script>

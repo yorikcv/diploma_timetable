@@ -5,9 +5,13 @@ module.exports = function(app) {
         api = {},
         checkAuth = require('../middleware/checkAuth');
 
+
+    api.subjectsPage = function(req, res) {
+        res.render('subjects');
+    };
     // ALL
     api.subjects = function(req, res, next) {
-        Subject.find(function(err, subjects) {
+        Subject.find().populate('teachers').exec(function(err, subjects) {
             if (err) {
                 return next(err);
             } else {
@@ -109,7 +113,7 @@ module.exports = function(app) {
         });
     };
 
-
+    app.get('/subjects', checkAuth, api.subjectsPage);
     app.get('/api/subjects', checkAuth, api.subjects);
     app.get('/api/subject/:id', checkAuth, api.subject);
     app.post('/api/subject', checkAuth, api.addSubject);
