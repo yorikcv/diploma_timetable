@@ -9,14 +9,58 @@
                     <fieldset>
                         <legend>Add Subject</legend>
                         <div class="form-group">
-                            <label for="inputSubjectName" class="col-lg-3 control-label">Name</label>
+                            <label for="inputSubjectTitle" class="col-lg-3 control-label">Title</label>
                             <div class="col-lg-9">
-                                <input type="text" class="form-control" id="inputSubjectName" placeholder="Name">
+                                <input type="text" class="form-control" id="inputSubjectTitle" placeholder="Title">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="teachers" class="col-lg-3 control-label">Teachers</label>
-                            <div class="col-lg-9 listTeachers"></div>
+                            <label for="inputCodeSubject" class="col-lg-3 control-label">Code of Subject</label>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="inputCodeSubject" placeholder="Code of Subject">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectTypeOfControl" class="col-lg-3 control-label">Type Of Control</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" id="selectTypeOfControl">
+                                    <option>Exam</option>
+                                    <option>Test</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectSemester" class="col-lg-3 control-label">Semester</label>
+                            <div class="col-lg-9">
+                                <select class="form-control" id="selectSemester">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                    <option>6</option>
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                    <option>10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectSpeciality" class="col-lg-3 control-label ">Speciality</label>
+                            <div class="col-lg-9">
+                                <select class="form-control selectLoaded" id="selectSpeciality">
+                                    <option>Doesn't load</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectTeacher" class="col-lg-3 control-label ">Teacher</label>
+                            <div class="col-lg-9">
+                                <select class="form-control selectLoaded" id="selectTeacher">
+                                    <option>Doesn't load</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-group">
                             <div class="col-lg-9 col-lg-offset-3 alertError"></div>

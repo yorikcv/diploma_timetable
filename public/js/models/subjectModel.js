@@ -4,12 +4,16 @@ API.Models.SubjectModel = Backbone.Model.extend({
     idAttribute: "_id",
 
     defaults: {
-        name: '',
-        teachers: []
+        title: '',
+        codeSubject: '',
+        typeOfControl: '',
+        semester: '',
+        teacher: '',
+        speciality: ''
     },
 
     validate: function(attrs, options) {
-        if (!attrs.name || !attrs.teachers.length) {
+        if (!attrs.title || !attrs.codeSubject || !attrs.typeOfControl || !attrs.semester || !attrs.teacher || !attrs.speciality) {
             return "All fields are required (One or more teachers must be marked)";
         }
     }

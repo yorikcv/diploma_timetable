@@ -10,7 +10,7 @@ var subjectSchema = new Schema({
         required: true,
         set: capitalize
     },
-    code: {
+    codeSubject: {
         type: Number,
         required: true
     },

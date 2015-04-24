@@ -7,10 +7,14 @@ API.Views.SubjectsView = Backbone.View.extend({
     }),
 
     selectTeacherTemplate: new EJS({
-        url: '/tmpl/selectTeacher.ejs'
+        url: '/tmpl/teacherSelect.ejs'
+    }),
+    selectSpecialityTemplate: new EJS({
+        url: '/tmpl/specialitySelect.ejs'
     }),
 
-    teachersColleaction: new API.Collections.TeachersCollection(),
+    TeachersCollection: new API.Collections.TeachersCollection(),
+    SpecialityCollection: new API.Collections.SpecialitiesCollection(),
 
     events: {
         "click .openModalAdd": "clearFields",
@@ -21,9 +25,7 @@ API.Views.SubjectsView = Backbone.View.extend({
         console.log("Initializing Subjects View");
 
         this.collection.fetchCollection();
-        this.teachersColleaction.fetchCollection();
         this.listenTo(this.collection, 'sync', this.render);
-        this.listenTo(this.teachersColleaction, 'sync', this.loadTeachers);
 
     },
 
@@ -47,16 +49,18 @@ API.Views.SubjectsView = Backbone.View.extend({
 
     addSubject: function(event) {
         event.preventDefault();
-        var subject = {
-            name: this.$('#inputSubjectName').val(),
-            teachers: []
-        };
+        var teacherCid = this.$('#selectTeacher').val(),
+            specialityCid = this.$('#selectSpeciality').val(),
+            subject = {
+                title: this.$('#inputSubjectTitle').val(),
+                codeSubject: this.$('#inputCodeSubject').val(),
+                typeOfControl: this.$('#selectTypeOfControl').val(),
+                semester: this.$('#selectSemester').val(),
+                teacher: this.TeachersCollection.get(teacherCid).id,
+                speciality: this.SpecialityCollection.get(specialityCid).id
+            };
 
         var that = this;
-
-        $('.listTeachers input:checked').each(function(index, input) {
-            subject.teachers.push(that.teachersColleaction.get($(input).attr('model')).id);
-        });
 
         var subjectModel = new API.Models.SubjectModel(subject, {
             validate: true
@@ -68,7 +72,7 @@ API.Views.SubjectsView = Backbone.View.extend({
 
         subjectModel.save(null, {
             error: function() {
-                
+
                 that.showErrorMassege("Cant connect to server");
             },
             success: function() {
@@ -84,20 +88,47 @@ API.Views.SubjectsView = Backbone.View.extend({
     },
 
     clearFields: function() {
+        this.$('#addSubjectModal .selectLoaded').html('');
+        this.loadSpecialityToSelect();
+        this.loadTeacherToSelect();
         this.$('.alertError').html('');
-        this.$('#inputSubjectName').val('');
-        this.$('.listTeachers input:checked').prop('checked', false);
+        this.$('#addSubjectModal input').val('');
     },
 
-    loadTeachers: function() {
-        var that = this;
+    loadSpecialityToSelect: function() {
+        var selectTemplate = this.selectSpecialityTemplate,
+            selectInput = this.$('#selectSpeciality');
 
-        this.$('.listTeachers').html('');
-        this.teachersColleaction.each(function(model, index) {
-            var teacher = model.toJSON();
-            teacher.cid = model.cid;
-            that.$('.listTeachers').append(that.selectTeacherTemplate.render(teacher));
+        this.SpecialityCollection.fetch({
+            success: function(collection) {
+                collection.each(function(model, index) {
+                    var specialityObject = model.toJSON();
+                    specialityObject.cid = model.cid;
+                    selectInput.append(selectTemplate.render({
+                        speciality: specialityObject
+                    }));
+                });
+            }
         });
-    }
+
+    },
+
+    loadTeacherToSelect: function() {
+        var selectTemplate = this.selectTeacherTemplate,
+            selectInput = this.$('#selectTeacher');
+
+        this.TeachersCollection.fetch({
+            success: function(collection) {
+                collection.each(function(model, index) {
+                    var teacherObject = model.toJSON();
+                    teacherObject.cid = model.cid;
+                    selectInput.append(selectTemplate.render({
+                        teacher: teacherObject
+                    }));
+                });
+            }
+        });
+
+    },
 
 });

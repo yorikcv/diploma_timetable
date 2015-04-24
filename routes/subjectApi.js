@@ -41,15 +41,19 @@ module.exports = function(app) {
     // POST
     api.addSubject = function(req, res, next) {
 
-        if (typeof req.body.name == 'undefined') {
+        if (typeof req.body.title == 'undefined') {
             return res.status(500).json({
                 message: 'subject is undefined'
             });
         }
 
         var subject = {
-            name: req.body.name,
-            teachers: req.body.teachers
+            title: req.body.title,
+            codeSubject: req.body.codeSubject,
+            typeOfControl: req.body.typeOfControl,
+            semester: req.body.semester,
+            teacher: req.body.teacher,
+            speciality: req.body.speciality
         }
 
         subject = new Subject(subject);

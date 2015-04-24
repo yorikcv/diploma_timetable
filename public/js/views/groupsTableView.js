@@ -6,7 +6,7 @@ API.Views.GroupsView = Backbone.View.extend({
         url: '/tmpl/groupTrow.ejs'
     }),
 
-    selectTemplate: new EJS({
+    specialitySelectTemplate: new EJS({
         url: 'tmpl/specialitySelect.ejs'
     }),
 
@@ -89,7 +89,7 @@ API.Views.GroupsView = Backbone.View.extend({
     },
 
     loadSpecialityToSelect: function() {
-        var selectTemplate = this.selectTemplate,
+        var selectTemplate = this.specialitySelectTemplate,
             selectInput = this.$('#selectSpeciality');
 
         this.SpecialityCollection.fetch({
