@@ -2,14 +2,15 @@
     "port": 3000,
     "mongoose": {
         "db": "timetable",
-        "host": "ds053808.mongolab.com",
-        "user": "yorik",
-        "pw": "1905",
-        "port": "53808",
+        "host": "localhost",
+        "user": "",
+        "pw": "",
+        "port": "27017",
         "options": {
             "db": {
                 "safe": true
-            }
+            },
+            "auto_reconnect": true
         }
     },
     "session": {

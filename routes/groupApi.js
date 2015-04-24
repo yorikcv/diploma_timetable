@@ -2,8 +2,10 @@ module.exports = function(app) {
     // Module dependencies
     var mongoose = require('mongoose'),
         Group = mongoose.models.Group,
+        Speciality = mongoose.models.Speciality,
         api = {},
-        checkAuth = require('../middleware/checkAuth');
+        checkAuth = require('../middleware/checkAuth'),
+        async = require('async');
 
     api.groupsPage = function(req, res) {
         res.render('groups');
@@ -42,31 +44,60 @@ module.exports = function(app) {
     // POST
     api.addGroup = function(req, res) {
 
-        var group;
-
         if (typeof req.body.title == 'undefined') {
             return res.status(500).json({
                 message: 'group is undefined'
             });
         }
 
-        var group = {
+        var groupObject = {
             title: req.body.title,
             yearEntered: req.body.yearEntered,
             yearEnded: req.body.yearEnded,
-            memberStudent: req.body.memberStudent
+            memberStudent: req.body.memberStudent,
+            specialityId: req.body.specialityId
         }
 
-        group = new Group(group);
+        group = new Group(groupObject);
 
-        group.save(function(err, groupSave) {
+        async.waterfall([
+            function(callback) {
+                group.save(function(err, groupSave) {
+                    if (!err) {
+                        console.log("created group");
+                        return callback(null, groupObject.specialityId, groupSave._id);
+                    } else {
+                        return callback(500);
+                    }
+                });
+            },
+            function(specialityId, groupId, callback) {
+                if(!specialityId) return callback(500);
+                Speciality.findById(specialityId, function(err, speciality) {
+                    if (!speciality) return callback(500);
+                    speciality.groups.push(groupId);
+
+                    speciality.save(function(err, specialitySave) {
+                        if (!err) {
+                            console.log("updated speciality");
+                            return callback(null, true);
+                        } else {
+                            return callback(500);
+                        }
+                    });
+                });
+            }
+        ], function(err, result) {
+
             if (!err) {
-                console.log("created group");
-                return res.status(201).json(groupSave);
+                return res.status(201).json(group.toJSON());
             } else {
                 return res.status(500).json(err);
             }
+            // result now equals 'done'    
         });
+
+
 
     };
 

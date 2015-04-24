@@ -6,6 +6,12 @@ API.Views.GroupsView = Backbone.View.extend({
         url: '/tmpl/groupTrow.ejs'
     }),
 
+    selectTemplate: new EJS({
+        url: 'tmpl/specialitySelect.ejs'
+    }),
+
+    SpecialityCollection: new API.Collections.SpecialitiesCollection(),
+
     events: {
         "click .openModalAdd": "clearFields",
         "click #addGroup": "addGroup"
@@ -51,13 +57,16 @@ API.Views.GroupsView = Backbone.View.extend({
 
     addGroup: function(event) {
         event.preventDefault();
-        var group = {
-            title: this.$('#inputGroupTitle').val(),
-            memberStudent: this.$('#inputStudentCount').val(),
-            yearEntered: this.$('#inputYearEntered').val(),
-            yearEnded: this.$('#inputYearEnded').val()
-            
-        };
+        var specialityCid = this.$('#selectSpeciality').val(),
+            group = {
+                title: this.$('#inputGroupTitle').val(),
+                memberStudent: this.$('#inputStudentCount').val(),
+                specialityId: this.SpecialityCollection.get(specialityCid).id,
+                yearEntered: this.$('#inputYearEntered').val(),
+                yearEnded: this.$('#inputYearEnded').val()
+            };
+
+            console.log(group);
 
         var groupModel = new API.Models.GroupModel(group, {
             validate: true
@@ -79,13 +88,34 @@ API.Views.GroupsView = Backbone.View.extend({
         });
     },
 
+    loadSpecialityToSelect: function() {
+        var selectTemplate = this.selectTemplate,
+            selectInput = this.$('#selectSpeciality');
+
+        this.SpecialityCollection.fetch({
+            success: function(collection) {
+                collection.each(function(model, index) {
+                    var specialityObject = model.toJSON();
+                    specialityObject.cid = model.cid;
+                    selectInput.append(selectTemplate.render({
+                        speciality: specialityObject
+                    }));
+                });
+            }
+        });
+
+    },
+
     showErrorMassege: function(message) {
         this.$('.alertError').html(message);
     },
 
     clearFields: function() {
+        this.$('#selectSpeciality').html('');
         this.$('.alertError').html('');
         this.$('input').val('');
+
+        this.loadSpecialityToSelect();
     }
 
 });
