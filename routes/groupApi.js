@@ -1,7 +1,6 @@
 module.exports = function(app) {
     // Module dependencies
     var mongoose = require('mongoose'),
-        Group = mongoose.models.Group,
         Speciality = mongoose.models.Speciality,
         api = {},
         checkAuth = require('../middleware/checkAuth'),
@@ -13,33 +12,39 @@ module.exports = function(app) {
 
     // ALL
     api.groups = function(req, res, next) {
-        Group.find(function(err, groups) {
+        Speciality.find(function(err, specialities) {
             if (err) {
                 next(err);
             } else {
-                if (groups === null) next(404);
+                if (specialities === null) next(404);
+                var groups = [];
+                for (var i = 0; i < specialities.length; i++) {
+                    [].push.apply(groups, specialities[i].groups);
+                }
 
                 res.json(groups);
+
+
             }
         });
     };
 
     // GET
-    api.group = function(req, res, next) {
-        var id = req.params.id;
-        Group.findOne({
-            '_id': id
-        }, function(err, group) {
-            if (err) {
-                next(err);
-            } else {
-                if (group === null) return next(404);
-                res.json(200, {
-                    group: group
-                });
-            }
-        });
-    };
+    // api.group = function(req, res, next) {
+    //     var id = req.params.id;
+    //     Group.findOne({
+    //         '_id': id
+    //     }, function(err, group) {
+    //         if (err) {
+    //             next(err);
+    //         } else {
+    //             if (group === null) return next(404);
+    //             res.json(200, {
+    //                 group: group
+    //             });
+    //         }
+    //     });
+    // };
 
     // POST
     api.addGroup = function(req, res) {
@@ -58,43 +63,22 @@ module.exports = function(app) {
             specialityId: req.body.specialityId
         }
 
-        group = new Group(groupObject);
 
-        async.waterfall([
-            function(callback) {
-                group.save(function(err, groupSave) {
-                    if (!err) {
-                        console.log("created group");
-                        return callback(null, groupObject.specialityId, groupSave._id);
-                    } else {
-                        return callback(500);
-                    }
-                });
-            },
-            function(specialityId, groupId, callback) {
-                if(!specialityId) return callback(500);
-                Speciality.findById(specialityId, function(err, speciality) {
-                    if (!speciality) return callback(500);
-                    speciality.groups.push(groupId);
+        Speciality.findById(groupObject.specialityId, function(err, speciality) {
+            if (!speciality) return next(500);
 
-                    speciality.save(function(err, specialitySave) {
-                        if (!err) {
-                            console.log("updated speciality");
-                            return callback(null, true);
-                        } else {
-                            return callback(500);
-                        }
-                    });
-                });
-            }
-        ], function(err, result) {
+            speciality.groups.push(groupObject);
+            var group = speciality.groups[speciality.groups.length - 1];
+            console.log(group);
 
-            if (!err) {
-                return res.status(201).json(group.toJSON());
-            } else {
-                return res.status(500).json(err);
-            }
-            // result now equals 'done'    
+            speciality.save(function(err, specialitySave) {
+                if (!err) {
+                    console.log("added group to speciality");
+                    return res.status(200).json(group.toJSON());
+                } else {
+                    return res.status(500).json(err);
+                }
+            });
         });
 
 
@@ -102,49 +86,93 @@ module.exports = function(app) {
     };
 
     // PUT
-    api.editGroup = function(req, res) {
-        var id = req.params.id;
+    // api.editGroup = function(req, res) {
+    //     var id = req.params.id;
 
-        Group.findById(id, function(err, group) {
+    //     Group.findById(id, function(err, group) {
 
-            if (typeof req.body.name != 'undefined') {
-                group.name = req.body.name;
-            }
-            if (typeof req.body.studentCount != 'undefined') {
-                group.studentCount = req.body.studentCount;
-            }
+    //         if (typeof req.body.name != 'undefined') {
+    //             group.name = req.body.name;
+    //         }
+    //         if (typeof req.body.studentCount != 'undefined') {
+    //             group.studentCount = req.body.studentCount;
+    //         }
 
-            return group.save(function(err) {
-                if (!err) {
-                    console.log("updated group");
-                    return res.status(200).json(group.toObject());
-                } else {
-                    return res.status(500).json(err);
-                }
-                return res.status(201).json(group);
-            });
-        });
+    //         return group.save(function(err) {
+    //             if (!err) {
+    //                 console.log("updated group");
+    //                 return res.status(200).json(group.toObject());
+    //             } else {
+    //                 return res.status(500).json(err);
+    //             }
+    //             return res.status(201).json(group);
+    //         });
+    //     });
 
-    };
+    // };
 
     // DELETE
     api.deleteGroup = function(req, res) {
         var id = req.params.id;
-        Group.findById(id, function(err, group) {
-            return group.remove(function(err) {
-                if (!err) {
-                    return res.send(204);
-                } else {
-                    return res.json(500, err);
-                }
-            });
+
+        async.waterfall([
+            function(callback) {
+                Speciality.find(function(err, specialities) {
+                    if (err) callback(err);
+                    if (specialities === null) callback(404);
+
+                    for (var i = 0; i < specialities.length; i++) {
+                        var groupDoc = specialities[i].groups.id(id);
+                        if (groupDoc) callback(null, specialities[i].id);
+                    }
+                });
+            },
+            function(specialityId, callback) {
+                if (!specialityId) callback(404);
+
+                Speciality.findById(specialityId, function(err, speciality) {
+                    if (err) callback(err);
+
+                    speciality.groups.id(id).remove();
+
+                    speciality.save(function(err, specialitySave) {
+                        if (!err) {
+                            callback(err);
+                        } else {
+                            callback(null, speciality.toObject())
+                        }
+                    });
+                });
+            }
+        ], function(err, speciality) {
+            if (!err) {
+                console.log("deleted group from speciality");
+                return res.status(204).json(speciality);
+            } else {
+                return res.status(500).json(err);
+            }
         });
+
+
+        // Speciality.find(function(err, specialities) {
+        //     if (err) next(err);
+
+        //     if (specialities === null) next(404);
+
+        //     specialities.groups.id(id).remove();
+
+        //     specialities.save(function(err) {
+        //         if (err) return next(err);
+        //         return res.status(204);
+        //     });
+
+        // });
     };
 
     app.get('/groups', checkAuth, api.groupsPage);
     app.get('/api/groups', checkAuth, api.groups);
-    app.get('/api/group/:id', checkAuth, api.group);
+    // app.get('/api/group/:id', checkAuth, api.group);
     app.post('/api/group', checkAuth, api.addGroup);
-    app.put('/api/group/:id', checkAuth, api.editGroup);
+    // app.put('/api/group/:id', checkAuth, api.editGroup);
     app.delete('/api/group/:id', checkAuth, api.deleteGroup);
 };

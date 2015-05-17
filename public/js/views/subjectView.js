@@ -1,5 +1,6 @@
 API.Views.SubjectView = Backbone.View.extend({
 
+    tagName: 'tr',
     subjectTemplate: new EJS({
         url: '/tmpl/subjectTrow.ejs'
     }),
@@ -54,10 +55,8 @@ API.Views.SubjectView = Backbone.View.extend({
     deleteSubject: function() {
         var subject = this.model.toJSON();
 
-        $('#deleteSubjectModal p').html(subject.name);
-
+        $('#deleteSubjectModal p').html(subject.title);
         $('#deleteSubjectModal').modal('show');
-
         $('#deleteSubjectModal .deleteSubjectConfirm').off().on("click", $.proxy(this.destroySubject, this));
     },
 

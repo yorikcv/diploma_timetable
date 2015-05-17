@@ -11,31 +11,34 @@ module.exports = function(app) {
     };
     // ALL
     api.subjects = function(req, res, next) {
-        Subject.find().populate('teachers').exec(function(err, subjects) {
-            if (err) {
-                return next(err);
-            } else {
-                if (subjects === null) next(404);
-                res.json(subjects);
-            }
-        });
+        Subject.find()
+            .populate('teacher')
+            .populate('speciality')
+            .exec(function(err, subjects) {
+                if (err) {
+                    return next(err);
+                } else {
+                    if (subjects === null) next(404);
+                    res.json(subjects);
+                }
+            });
     };
 
     // GET
     api.subject = function(req, res, next) {
         var id = req.params.id;
         Subject.findOne({
-            '_id': id
-        }, function(err, subject) {
-            if (err) {
-                return next(err);
-            } else {
-                if (subject === null) return next(404);
-                res.json(200, {
-                    subject: subject
-                });
-            }
-        });
+                '_id': id
+            }).populate('teacher')
+            .populate('speciality')
+            .exec(function(err, subject) {
+                if (err) {
+                    return next(err);
+                } else {
+                    if (subject === null) next(404);
+                    res.json(subject);
+                }
+            });;
     };
 
     // POST
@@ -61,12 +64,11 @@ module.exports = function(app) {
         subject.save(function(err) {
             if (!err) {
                 console.log("created subject");
-                return res.status(201).json(subject.toObject());
+                return res.status(201).json(subject);
             } else {
                 return res.status(500).json(err);
             }
         });
-
     };
 
     // PUT

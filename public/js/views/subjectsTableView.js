@@ -30,14 +30,15 @@ API.Views.SubjectsView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$('.subjectList').html('');
+
+        this.$('table tbody').html('');
 
         if (this.collection.toJSON().length) {
             this.$('#listIsClear').hide();
 
             this.collection.each(function(subjectModel, key) {
                 subjectModel.set("count", key + 1);
-                this.$('.subjectList').append(new API.Views.SubjectView({
+                this.$('table tbody').append(new API.Views.SubjectView({
                     model: subjectModel
                 }).render());
             });
@@ -76,7 +77,14 @@ API.Views.SubjectsView = Backbone.View.extend({
                 that.showErrorMassege("Cant connect to server");
             },
             success: function() {
-                that.collection.add(subjectModel);
+                subjectModel.fetch({
+                    success: function() {
+                        console.log(subjectModel);
+                        that.collection.add(subjectModel);
+                    }
+                });
+
+
                 $('#addSubjectModal').modal('hide');
             },
             wait: true

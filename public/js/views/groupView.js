@@ -64,7 +64,11 @@ API.Views.GroupView = Backbone.View.extend({
 
     destroyGroup: function() {
         this.model.destroy({
+            error: function(model, response) {
+                console.log(response);
+            },
             success: function(model, response) {
+                console.log(response);
                 $('#deleteGroupModal').modal('hide');
             },
             wait: true
