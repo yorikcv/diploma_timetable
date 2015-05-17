@@ -24,6 +24,10 @@ var groupSchema = new Schema({
         min: 1,
         max: 100
     },
+    property: {
+        type: String,
+        default: null
+    },
     created: {
         type: Date,
         default: Date.now
@@ -55,6 +59,9 @@ groupSchema.path('yearEnded').validate(function(yearEnded) {
     return yearEnded > this.yearEntered;
 }, 'Year ended must be later than year entered');
 
+groupSchema.path('property').validate(function(property) {
+    return /short|spec|master/i.test(property);
+}, 'Property of gropu can be short, spec or master');
 
 groupSchema.virtual('semester')
     .get(function() {

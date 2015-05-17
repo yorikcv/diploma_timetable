@@ -96,6 +96,19 @@ API.Views.SubjectsView = Backbone.View.extend({
     },
 
     clearFields: function() {
+
+        // this.$('.property').click(function() {
+        //     var $this = $(this);
+        //     if ($this.is(":checked")) {
+        //         $(".property").not($this).prop({
+        //             disabled: true,
+        //             checked: false
+        //         });
+        //     } else {
+        //         $(".property").prop("disabled", false);
+        //     }
+        // });
+
         this.$('#addSubjectModal .selectLoaded').html('');
         this.loadSpecialityToSelect();
         this.loadTeacherToSelect();
