@@ -21,7 +21,7 @@ API.Views.GroupsView = Backbone.View.extend({
         console.log("Initializing Groups View");
         $('#addGroupModal .datepickerInput').datepicker({
             startView: 2,
-            minViewMode: 1,
+            minViewMode: 2,
             todayBtn: "linked",
             orientation: "top auto",
             keyboardNavigation: false,
@@ -29,6 +29,12 @@ API.Views.GroupsView = Backbone.View.extend({
             autoclose: true,
             todayHighlight: true,
             toggleActive: true
+        }).on("hide", function(e) {
+            var timeEntered = moment("2000-09-01").set('year', moment(e.date).get('year')),
+                timeEnded = moment().set('month', 5).set('date', 30).set('year', moment(e.date).get('year') + 5);
+            $('#addGroupModal #inputYearEntered').datepicker('setDate', new Date(timeEntered.toString()));
+            $('#addGroupModal #inputYearEnded').datepicker('setDate', new Date(timeEnded.toString()));
+
         });
 
         this.collection.fetchCollection();
@@ -66,7 +72,7 @@ API.Views.GroupsView = Backbone.View.extend({
                 yearEnded: this.$('#inputYearEnded').val()
             };
 
-            console.log(group);
+        console.log(group);
 
         var groupModel = new API.Models.GroupModel(group, {
             validate: true

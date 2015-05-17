@@ -22,6 +22,10 @@ API.Views.AuditoriumsView = Backbone.View.extend({
     render: function() {
         this.$('tbody').html('');
 
+        this.collection.sortBy(function() {
+            return name;
+        });
+
         if (this.collection.toJSON().length) {
             this.$('#listIsClear').hide();
 
