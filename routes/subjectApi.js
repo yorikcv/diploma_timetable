@@ -56,7 +56,8 @@ module.exports = function(app) {
             typeOfControl: req.body.typeOfControl,
             semester: req.body.semester,
             teacher: req.body.teacher,
-            speciality: req.body.speciality
+            speciality: req.body.speciality,
+            property: req.body.property
         }
 
         subject = new Subject(subject);

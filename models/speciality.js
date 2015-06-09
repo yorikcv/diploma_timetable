@@ -41,7 +41,6 @@ var specialitySchema = new Schema({
     },
     codeDepartment: {
         type: Number,
-        unique: true,
         required: true
     },
     groups: [groupSchema],
@@ -60,8 +59,8 @@ groupSchema.path('yearEnded').validate(function(yearEnded) {
 }, 'Year ended must be later than year entered');
 
 groupSchema.path('property').validate(function(property) {
-    return /short|spec|master/i.test(property);
-}, 'Property of gropu can be short, spec or master');
+    return /short|spec|master|null/i.test(property);
+}, 'Property of group can be short, spec or master');
 
 groupSchema.virtual('semester')
     .get(function() {
@@ -69,6 +68,10 @@ groupSchema.virtual('semester')
         var quarter = moment().fquarter(8);
         return (quarter.year - yearEntered) * 2 + quarter.quarter
     });
+
+groupSchema.set('toObject', {
+   virtuals: true
+});
 
 groupSchema.set('toJSON', {
    virtuals: true

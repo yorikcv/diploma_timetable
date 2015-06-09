@@ -1,15 +1,9 @@
-'use strict';
-
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = Schema.Types.ObjectId;
 
 var subjectSchema = new Schema({
-    title: {
-        type: String,
-        required: true,
-        set: capitalize
-    },
+    
     codeSubject: {
         type: Number,
         required: true
@@ -17,6 +11,10 @@ var subjectSchema = new Schema({
     typeOfControl: {
         type: String,
         require: true
+    },
+    title: {
+        type: String,
+        set: capitalize
     },
     semester: {
         type: Number,
@@ -32,6 +30,10 @@ var subjectSchema = new Schema({
         type: ObjectId,
         ref: 'Speciality'
     },
+    property: {
+        type: String,
+        default: null
+    },
     active: {
         type: Boolean,
         default: true
@@ -45,6 +47,10 @@ var subjectSchema = new Schema({
 subjectSchema.path('typeOfControl').validate(function(typeOfControl) {
     return /exam|test/i.test(typeOfControl);
 }, 'Type of control subject can be only Exam or Test');
+
+subjectSchema.path('property').validate(function(property) {
+    return /short|spec|master|null/i.test(property);
+}, 'Property of subject can be short, spec or master');
 
 function capitalize(val) {
     if ('string' != typeof val) val = '';

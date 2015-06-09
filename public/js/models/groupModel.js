@@ -16,5 +16,4 @@ API.Models.GroupModel = Backbone.Model.extend({
             return "All fields are required";
         }
     }
-
 });

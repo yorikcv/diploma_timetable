@@ -17,6 +17,8 @@ API.Views.GroupsView = Backbone.View.extend({
         "click #addGroup": "addGroup"
     },
 
+    propertyGroup: null,
+
     initialize: function() {
         console.log("Initializing Groups View");
         $('#addGroupModal .datepickerInput').datepicker({
@@ -63,6 +65,10 @@ API.Views.GroupsView = Backbone.View.extend({
 
     addGroup: function(event) {
         event.preventDefault();
+        var property = this.$('.property input:checked').attr('val');
+        if (!property) {
+            property = null;
+        }
         var specialityCid = this.$('#selectSpeciality').val(),
             group = {
                 title: this.$('#inputGroupTitle').val(),
@@ -78,6 +84,8 @@ API.Views.GroupsView = Backbone.View.extend({
             validate: true
         });
 
+        console.log(groupModel);
+
         if (groupModel.validationError) return this.showErrorMassege(groupModel.validationError);
 
         var that = this;
@@ -85,6 +93,7 @@ API.Views.GroupsView = Backbone.View.extend({
         groupModel.save(null, {
             error: function(model, err) {
                 that.showErrorMassege("Cant connect to server");
+                console.log(err);
             },
             success: function() {
                 that.collection.add(groupModel);

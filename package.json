@@ -12,6 +12,7 @@
     "errorhandler": "latest",
     "express": "latest",
     "express-session": "^1.10.4",
+    "lodash": "^3.9.3",
     "method-override": "latest",
     "moment": "^2.10.2",
     "mongoose": "latest",

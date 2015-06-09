@@ -60,7 +60,8 @@ module.exports = function(app) {
             yearEntered: req.body.yearEntered,
             yearEnded: req.body.yearEnded,
             memberStudent: req.body.memberStudent,
-            specialityId: req.body.specialityId
+            specialityId: req.body.specialityId,
+            property: req.body.property
         }
 
 

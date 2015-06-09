@@ -50,6 +50,10 @@ API.Views.SubjectsView = Backbone.View.extend({
 
     addSubject: function(event) {
         event.preventDefault();
+        var property = this.$('.property input:checked').attr('val');
+        if (!property) {
+            property = null;
+        }
         var teacherCid = this.$('#selectTeacher').val(),
             specialityCid = this.$('#selectSpeciality').val(),
             subject = {
@@ -58,7 +62,8 @@ API.Views.SubjectsView = Backbone.View.extend({
                 typeOfControl: this.$('#selectTypeOfControl').val(),
                 semester: this.$('#selectSemester').val(),
                 teacher: this.TeachersCollection.get(teacherCid).id,
-                speciality: this.SpecialityCollection.get(specialityCid).id
+                speciality: this.SpecialityCollection.get(specialityCid).id,
+                property: property
             };
 
         var that = this;
@@ -96,18 +101,6 @@ API.Views.SubjectsView = Backbone.View.extend({
     },
 
     clearFields: function() {
-
-        // this.$('.property').click(function() {
-        //     var $this = $(this);
-        //     if ($this.is(":checked")) {
-        //         $(".property").not($this).prop({
-        //             disabled: true,
-        //             checked: false
-        //         });
-        //     } else {
-        //         $(".property").prop("disabled", false);
-        //     }
-        // });
 
         this.$('#addSubjectModal .selectLoaded').html('');
         this.loadSpecialityToSelect();

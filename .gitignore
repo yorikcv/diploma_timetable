@@ -2,3 +2,4 @@
 node_modules/
 db/
 public/bower_components
+.idea/
