@@ -11,7 +11,7 @@ module.exports = function(app) {
         checkAuth = require('../middleware/checkAuth');
 
     var startDate = moment("2015-05-25"),
-        endDate = moment("2015-06-25");
+        endDate = moment("2015-06-17");
 
     api.timetable = function(req, res, next) {
 
@@ -114,17 +114,17 @@ module.exports = function(app) {
             if (!chromosome.length) {
                 specCount = 0;
             }
-
-            for (var grpCount = 0; grpCount < specialities[specCount].groups.length; grpCount++) {
+            var grpLength = specialities[specCount].groups.length;
+            for (var grpCount = 0; grpCount < grpLength; grpCount++) {
                 var group = specialities[specCount].groups[grpCount],
                     subjects = [],
                     subjectLength = group.subjects.length,
                     di = 1,
                     dmin = 1,
                     restartSubject = 0,
-                    breakerTeach = 0;
-                    // referenceDatesTeachersSubj = referenceDatesTeachers,
-                    // referenceDatesAuditoriumsSubj = referenceDatesAuditoriums;
+                    breakerTeach = 0,
+                    referenceDatesTeachersSubj = clone(referenceDatesTeachers),
+                    referenceDatesAuditoriumsSubj = clone(referenceDatesAuditoriums);
 
                 for (var sbjCount = 0; sbjCount < subjectLength; sbjCount++) {
                     var subject = group.subjects[sbjCount],
@@ -151,8 +151,9 @@ module.exports = function(app) {
                             restart = 0;
                         while (breakerAud) {
                             auditoriumRandom = getRandomInt(0, auditoriums.length);
-                            if (referenceDatesAuditoriums[di - 1][auditoriumRandom] === 0) {
-                                referenceDatesAuditoriums[di - 1][auditoriumRandom] = 1;
+                            if (referenceDatesAuditoriumsSubj[di - 1][auditoriumRandom] === 0) {
+                                restartAud = 0;
+                                referenceDatesAuditoriumsSubj[di - 1][auditoriumRandom] = 1;
                                 breakerAud = false;
                             } else {
                                 if (restartAud < auditoriums.length * 10) {
@@ -173,9 +174,9 @@ module.exports = function(app) {
                         if (!restartAud) {
                             while (breakerTeach) {
 
-                                if (referenceDatesTeachers[di - 1][teacher] === 0 ||
-                                    referenceDatesTeachers[di - 1][teacher] === 1) {
-                                    referenceDatesTeachers[di - 1][teacher]++;
+                                if (referenceDatesTeachersSubj[di - 1][teacher] === 0 ||
+                                    referenceDatesTeachersSubj[di - 1][teacher] === 1) {
+                                    referenceDatesTeachersSubj[di - 1][teacher]++;
                                     breakerTeach = false;
                                 } else {
                                     breakerTeach = false;
@@ -184,7 +185,7 @@ module.exports = function(app) {
                             }
                         }
 
-                        var teacherName = teachers[teacher].name.first +" "+ teachers[teacher].name.last + teachers[teacher].name.middle;
+                        var teacherName = teachers[teacher].name.first + " " + teachers[teacher].name.last + teachers[teacher].name.middle;
 
                         subjects.push({
                             speciality: specialities[specCount].title,
@@ -192,9 +193,8 @@ module.exports = function(app) {
                             subject: subject.title,
                             teacher: teacherName,
                             auditorium: auditoriums[auditoriumRandom].name,
-                            shift: referenceDatesTeachers[di - 1][teacher],
+                            shift: referenceDatesTeachersSubj[di - 1][teacher],
                             date: moment(datesWithWekends[di - 1]).format("dddd, MMMM Do YYYY")
-
                         });
                     }
                     //
@@ -207,10 +207,12 @@ module.exports = function(app) {
 
                 //
                 if (!(subjectLength * 2 === restartSubject) && !(restart === 1)) {
-                    // referenceDatesTeachers = referenceDatesTeachersSubj;
-                    // referenceDatesAuditoriums = referenceDatesAuditoriumsSubj;
+                    referenceDatesTeachers = clone(referenceDatesTeachersSubj);
+                    referenceDatesAuditoriums = clone(referenceDatesAuditoriumsSubj);
                     chromosome = chromosome.concat(subjects);
                     console.log(chromosome.length);
+                    console.log("Teacher = " + countArray(referenceDatesTeachers));
+                    console.log("Auditorium = " + countArray(referenceDatesAuditoriums));
                 } else {
                     resetSpec++;
                 }
@@ -222,9 +224,10 @@ module.exports = function(app) {
                     referenceDatesAuditoriums = createRefernceTable(datesWithWekends.length, auditoriums.length, 0);
                     resetSpec = 0;
 
-                    specCount = 0;
-                    grpCount = specialities[specCount].groups.length;
                     sbjCount = subjectLength;
+                    grpCount = specialities[specCount].groups.length;
+                    specCount = 0;
+
                 }
 
             };
@@ -250,8 +253,18 @@ module.exports = function(app) {
                 arr[i][j] = defaultValue;
             }
         }
-
         return arr;
+    }
+
+    function countArray(array) {
+        var count = 0;
+        // Creates all lines:
+        for (var i = 0; i < array.length; i++) {
+            for (var j = 0; j < array[i].length; j++) {
+                count = count + array[i][j];
+            }
+        }
+        return count;
     }
 
     function durationDays(firstDate, secondDate) {
@@ -262,4 +275,13 @@ module.exports = function(app) {
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     };
+
+    function clone(arr) {
+        return newArr = arr.map(function func(el) {
+            if (Object.prototype.toString.call(el) == "[object Array]") {
+                return el.map(func);
+            }
+            return el;
+        });
+    }
 }
