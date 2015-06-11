@@ -38,15 +38,57 @@ module.exports = function(app) {
             function(err, data) {
                 if (err) res.send(err);
                 var specialities = buildSpecialitiesWithSubjects(data.specialities, data.subjects),
-                    timetable = createСhromosome(specialities, data.datesWithoutWekends, data.datesWithWekends, data.auditoriums, data.teachers);
+                    chromosomes = [];
 
-                res.send(timetable);
+
+                for (var i = 0; i < 50; i++) {
+                    chromosomes.push(createСhromosome(specialities, data.datesWithoutWekends, data.datesWithWekends, data.auditoriums, data.teachers, true));
+                    console.log(i * 2 + '%');
+                };
+
+                res.send(chromosomes);
             });
+    };
+
+    api.timetablePage = function(req, res, next) {
+
+        async.parallel({
+                specialities: function(callback) {
+                    Speciality.find(callback);
+                },
+                auditoriums: function(callback) {
+                    Auditorium.find(callback);
+                },
+                subjects: function(callback) {
+                    Subject.find(callback);
+                },
+                teachers: function(callback) {
+                    Teacher.find(callback);
+                },
+                datesWithoutWekends: function(callback) {
+                    callback(null, createDatesArrayWekend(startDate, endDate));
+                },
+                datesWithWekends: function(callback) {
+                    callback(null, createDatesArray(startDate, endDate));
+                }
+            },
+            function(err, data) {
+                if (err) res.send(err);
+                var specialities = buildSpecialitiesWithSubjects(data.specialities, data.subjects),
+                    chromosomes = [];
+
+                var chromosome = createСhromosome(specialities, data.datesWithoutWekends, data.datesWithWekends, data.auditoriums, data.teachers);
+
+                res.render('timetable', {
+                    timetable: transferToObject(chromosome)
+                });
+            });
+    };
 
 
-    }
+    app.get('/api/timetable', checkAuth, api.timetable);
+    app.get('/timetable', checkAuth, api.timetablePage);
 
-    app.get('/timetable', checkAuth, api.timetable);
 
     function createDatesArrayWekend(startDate, endDate) {
         var dateArray = [],
@@ -92,7 +134,6 @@ module.exports = function(app) {
                     property: specialities[i].groups[j].property
                 }
 
-
                 specialities[i].groups[j].subjects = _.filter(subjects, paramObject);
             };
         };
@@ -100,7 +141,7 @@ module.exports = function(app) {
     };
 
 
-    function createСhromosome(specialities, datesWithoutWekends, datesWithWekends, auditoriums, teachers) {
+    function createСhromosome(specialities, datesWithoutWekends, datesWithWekends, auditoriums, teachers, chromosomeView) {
         var chromosome = [],
             duration = durationDays(datesWithWekends[0], datesWithWekends[datesWithWekends.length - 1]),
             referenceDatesTeachers = createRefernceTable(datesWithWekends.length, teachers.length, 0),
@@ -187,7 +228,20 @@ module.exports = function(app) {
 
                         var teacherName = teachers[teacher].name.first + " " + teachers[teacher].name.last + teachers[teacher].name.middle;
 
-                        subjects.push({
+                        
+
+                        if (chromosomeView) {
+                            subjects.push([
+                                specCount,
+                                grpCount,
+                                sbjCount,
+                                teacher, 
+                                auditoriumRandom,
+                                referenceDatesTeachersSubj[di - 1][teacher],
+                                di
+                            ]);
+                        } else {
+                            subjects.push({
                             speciality: specialities[specCount].title,
                             group: group.title,
                             subject: subject.title,
@@ -196,6 +250,8 @@ module.exports = function(app) {
                             shift: referenceDatesTeachersSubj[di - 1][teacher],
                             date: moment(datesWithWekends[di - 1]).format("dddd, MMMM Do YYYY")
                         });
+                        }
+
                     }
                     //
                     if ((subjectLength * 2 === restartSubject) || (restart === 1)) {
@@ -210,9 +266,6 @@ module.exports = function(app) {
                     referenceDatesTeachers = clone(referenceDatesTeachersSubj);
                     referenceDatesAuditoriums = clone(referenceDatesAuditoriumsSubj);
                     chromosome = chromosome.concat(subjects);
-                    console.log(chromosome.length);
-                    console.log("Teacher = " + countArray(referenceDatesTeachers));
-                    console.log("Auditorium = " + countArray(referenceDatesAuditoriums));
                 } else {
                     resetSpec++;
                 }
@@ -233,11 +286,7 @@ module.exports = function(app) {
             };
         };
 
-        return {
-            chromosome: chromosome,
-            referenceDatesTeachers: referenceDatesTeachers,
-            referenceDatesAuditoriums: referenceDatesAuditoriums
-        };
+        return chromosome;
 
     };
 
@@ -283,5 +332,50 @@ module.exports = function(app) {
             }
             return el;
         });
-    }
+    };
+
+    function transferToObject(chromosome) {
+        var timetable = [];
+
+        for (var i = 0; i < chromosome.length; i++) {
+            var speciality = {
+                speciality: chromosome[i].speciality,
+                groups: []
+            }
+            indexSpec = _.findIndex(timetable, speciality);
+
+            if (indexSpec === -1) {
+                timetable.push(speciality);
+            }
+        };
+
+        for (var i = 0; i < chromosome.length; i++) {
+            var group = {
+                    name: chromosome[i].group
+                },
+                indexGrp = _.findIndex(timetable[indexSpec].groups, group),
+                indexSpec = _.findIndex(timetable, 'speciality', chromosome[i].speciality);
+
+            if (indexGrp === -1) {
+                timetable[indexSpec].groups.push(group);
+            }
+        };
+
+        for (var i = 0; i < chromosome.length; i++) {
+            var subject = {
+                    name: chromosome[i].subject,
+                    teacher: chromosome[i].teacher,
+                    auditorium: chromosome[i].auditorium,
+                    shift: chromosome[i].shift,
+                    date: chromosome[i].date
+                },
+                indexSpec = _.findIndex(timetable, 'speciality', chromosome[i].speciality),
+                indexGrp = _.findIndex(timetable[indexSpec].groups, 'name', chromosome[i].group);
+
+            if (!timetable[indexSpec].groups[indexGrp].subjects) timetable[indexSpec].groups[indexGrp].subjects = [];
+            timetable[indexSpec].groups[indexGrp].subjects.push(subject);
+        };
+
+        return timetable;
+    };
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%- include( 'layouts/head'); -%>
+</head>
+
+<body>
+    <div class="container" id="teacherPage">
+        <%- include( 'layouts/header'); -%>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <% if (timetable) { %>
+                        <% for (var countSpec = 0; countSpec < timetable.length; countSpec++) { %>
+                            <h2> <%= timetable[countSpec].speciality %> </h2>
+                            <% var groups = timetable[countSpec].groups%>
+                                <table class="table table-striped table-hover ">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name of Exam</th>
+                                                <th>Teacher</th>
+                                                <th>Auditorium</th>
+                                                <th>Shim</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                <% for (var countGrp = 0; countGrp < groups.length; countGrp++) {%>
+                                  <%  var subjects = groups[countGrp].subjects%>
+                                            <tr class="success">
+                                                <td></td>
+                                                <td></td>
+                                                <td><h4><%= groups[countGrp].name %></h4></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <%for (var countSbj = 0; countSbj < subjects.length; countSbj++) {%>
+                                            <tr>
+                                                <td><%= countSbj+1 %></td>
+                                                <td><%=subjects[countSbj].name%></td>
+                                                <td><%=subjects[countSbj].teacher%></td>
+                                                <td><%=subjects[countSbj].auditorium%></td>
+                                                <td><%=subjects[countSbj].shift%></td>
+                                                <td><%=subjects[countSbj].date%></td>
+                                            </tr>
+                                            <%};%>
+                                        
+                                <% };%>
+                                    </tbody>
+                                </table>
+                        <%}; %>
+                        
+                    <% } %>
+                </div>
+            </div>
+    </div>
+    <%- include( 'layouts/footer'); -%>
+</body>
+
+</html>
