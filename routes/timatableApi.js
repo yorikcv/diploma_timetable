@@ -41,12 +41,15 @@ module.exports = function(app) {
                     chromosomes = [];
 
 
-                for (var i = 0; i < 50; i++) {
+                for (var i = 0; i < 100; i++) {
                     chromosomes.push(createСhromosome(specialities, data.datesWithoutWekends, data.datesWithWekends, data.auditoriums, data.teachers, true));
-                    console.log(i * 2 + '%');
+                    console.log(i + 1 + '%');
                 };
 
-                res.send(chromosomes);
+                var chromosomesSortedByFitnes = _.sortBy(chromosomes, 'fitnes'),
+                selectionChromosomes = selection(chromosomesSortedByFitnes);
+
+                res.send(selectionChromosomes);
             });
     };
 
@@ -80,15 +83,44 @@ module.exports = function(app) {
                 var chromosome = createСhromosome(specialities, data.datesWithoutWekends, data.datesWithWekends, data.auditoriums, data.teachers);
 
                 res.render('timetable', {
-                    timetable: transferToObject(chromosome)
+                    timetable: transferToObject(chromosome.object)
                 });
             });
     };
 
-
     app.get('/api/timetable', checkAuth, api.timetable);
     app.get('/timetable', checkAuth, api.timetablePage);
 
+
+    function selection(chromosomes) {
+        var selectedChromosomes = [];
+        for (var i = 0; i < (chromosomes.length / 2); i++) {
+            selectedChromosomes.push(chromosomes[i].array);
+            selectedChromosomes.push(chromosomes[i].array);
+        };
+        console.log(selectedChromosomes.length)
+        return selectedChromosomes;
+    };
+
+    function FitnesFunction(chromosome) {
+        var F1 = 0,
+            F2 = 1,
+            w1 = 1,
+            w2 = 1;
+        var array = chromosome.array,
+            object = chromosome.object,
+            groups = getArrayGroups(chromosome);
+
+        for (var i = 0; i < object.length; i++) {
+            if (object[i].shift === 2) {
+                F1++;
+            }
+        };
+
+        F2 = 1 - groups[groups.length - 1].Fmiddle;
+
+        return F1 * w1 + F2 * w2;
+    };
 
     function createDatesArrayWekend(startDate, endDate) {
         var dateArray = [],
@@ -141,8 +173,9 @@ module.exports = function(app) {
     };
 
 
-    function createСhromosome(specialities, datesWithoutWekends, datesWithWekends, auditoriums, teachers, chromosomeView) {
+    function createСhromosome(specialities, datesWithoutWekends, datesWithWekends, auditoriums, teachers) {
         var chromosome = [],
+            chromosomeView = [],
             duration = durationDays(datesWithWekends[0], datesWithWekends[datesWithWekends.length - 1]),
             referenceDatesTeachers = createRefernceTable(datesWithWekends.length, teachers.length, 0),
             referenceDatesAuditoriums = createRefernceTable(datesWithWekends.length, auditoriums.length, 0),
@@ -159,6 +192,7 @@ module.exports = function(app) {
             for (var grpCount = 0; grpCount < grpLength; grpCount++) {
                 var group = specialities[specCount].groups[grpCount],
                     subjects = [],
+                    subjectsView = [],
                     subjectLength = group.subjects.length,
                     di = 1,
                     dmin = 1,
@@ -228,29 +262,26 @@ module.exports = function(app) {
 
                         var teacherName = teachers[teacher].name.first + " " + teachers[teacher].name.last + teachers[teacher].name.middle;
 
-                        
 
-                        if (chromosomeView) {
-                            subjects.push([
-                                specCount,
-                                grpCount,
-                                sbjCount,
-                                teacher, 
-                                auditoriumRandom,
-                                referenceDatesTeachersSubj[di - 1][teacher],
-                                di
-                            ]);
-                        } else {
-                            subjects.push({
+
+                        subjects.push([
+                            specCount,
+                            grpCount,
+                            sbjCount,
+                            teacher,
+                            auditoriumRandom,
+                            referenceDatesTeachersSubj[di - 1][teacher],
+                            di
+                        ]);
+                        subjectsView.push({
                             speciality: specialities[specCount].title,
                             group: group.title,
                             subject: subject.title,
                             teacher: teacherName,
                             auditorium: auditoriums[auditoriumRandom].name,
                             shift: referenceDatesTeachersSubj[di - 1][teacher],
-                            date: moment(datesWithWekends[di - 1]).format("dddd, MMMM Do YYYY")
+                            date: moment(datesWithWekends[di - 1])
                         });
-                        }
 
                     }
                     //
@@ -266,12 +297,14 @@ module.exports = function(app) {
                     referenceDatesTeachers = clone(referenceDatesTeachersSubj);
                     referenceDatesAuditoriums = clone(referenceDatesAuditoriumsSubj);
                     chromosome = chromosome.concat(subjects);
+                    chromosomeView = chromosomeView.concat(subjectsView);
                 } else {
                     resetSpec++;
                 }
 
                 if (resetSpec === specialities[specCount].groups.length * 10) {
                     chromosome = [];
+                    chromosomeView = [];
                     duration = durationDays(datesWithWekends[0], datesWithWekends[datesWithWekends.length - 1]);
                     referenceDatesTeachers = createRefernceTable(datesWithWekends.length, teachers.length, 0);
                     referenceDatesAuditoriums = createRefernceTable(datesWithWekends.length, auditoriums.length, 0);
@@ -286,7 +319,16 @@ module.exports = function(app) {
             };
         };
 
-        return chromosome;
+        var fitnesFunction = FitnesFunction({
+            object: chromosomeView,
+            array: chromosome
+        });
+
+        return {
+            object: chromosomeView,
+            array: chromosome,
+            fitnes: fitnesFunction
+        };
 
     };
 
@@ -377,5 +419,47 @@ module.exports = function(app) {
         };
 
         return timetable;
+    };
+
+    function getArrayGroups(chromosome) {
+        var groups = [],
+            F2 = [],
+            array = chromosome.array,
+            object = chromosome.object;
+
+        for (var i = 0; i < object.length; i++) {
+            var group = {
+                    name: object[i].group
+                },
+                indexGrp = _.findIndex(groups, group);
+
+            if (indexGrp === -1) {
+                groups.push(group);
+                groups[groups.length - 1].dates = [];
+            }
+            groups[groups.length - 1].dates.push(array[i][6]);
+        };
+
+        for (var i = 0; i < groups.length; i++) {
+            for (var j = 0; j < groups[i].dates.length; j++) {
+                if (j === (groups[i].dates.length - 1)) {
+                    groups[i].dates = _.dropRight(groups[i].dates);
+                    var middle = _.sum(groups[i].dates) / j,
+                        multiply = 1;
+                    for (var k = 0; k < groups[i].dates.length; k++) {
+                        multiply = multiply * (groups[i].dates[k] / middle);
+                    };
+                    groups[i].fitnes = multiply;
+                    F2.push(multiply);
+                }
+                groups[i].dates[j] = groups[i].dates[j + 1] - groups[i].dates[j];
+            };
+        };
+
+        groups.push({
+            Fmiddle: _.sum(F2) / F2.length
+        })
+
+        return groups;
     };
 }
